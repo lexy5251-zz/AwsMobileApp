@@ -32,7 +32,7 @@ export default class QuestionPager extends React.Component {
   }
 
   render() {
-    const { questions } = this.props;
+    const { questions, setChoiceForQuestion } = this.props;
     return (
       <ViewPager ref={this.viewPager} style={styles.viewPager} initialPage={this.state.page}>
          {Object.entries(questions).map(([id, q], i) => {

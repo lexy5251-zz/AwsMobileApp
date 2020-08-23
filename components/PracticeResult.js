@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import 'react-native-gesture-handler';
-
+import { connect } from 'react-redux';
 
 const PracticeResult = ({currentPractice}) => {
 
@@ -19,4 +19,8 @@ const PracticeResult = ({currentPractice}) => {
   );
 }
 
-export default PracticeResult;
+const mapStateToProps = ({currentPractice}) => {
+  return {currentPractice};
+}
+
+export default connect(mapStateToProps, null, null, {pure: false})(PracticeResult);

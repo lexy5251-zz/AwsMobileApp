@@ -35,17 +35,27 @@ export default class QuestionComponent extends React.Component {
     render() {
         const  { questionText, explanationText, correctAnswers } = this.props.question;        
         const  { answers, choiceText } = this.state;
+        const { showAnswerOnChoiceSelected } = this.props;
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <Text>IN QUESTION Component</Text>
               <Text>{questionText}</Text>
               {answers.map((choice, i) => {
+                let isCorrectChoice = correctAnswers.includes(choice);
+                let checkedColor = 'blue';
+                let explanation;
+                if(showAnswerOnChoiceSelected) {
+                  checkedColor = isCorrectChoice ? 'green' : 'red';
+                  explanation = isCorrectChoice && choiceText ? explanationText : "";
+                } 
+
                   return (<ChoiceComponent 
                         key={i}
                         text={choice}
                         checked={choiceText===choice}
                         onClick={this.handleChoiceClick}
-                        isCorrectChoice={correctAnswers.includes(choice)}
+                        checkedColor={checkedColor}
+                        explanation={explanation}
                         />)
               })}
               <View style={styles.fixToText}>

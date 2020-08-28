@@ -28,7 +28,10 @@ export default function PracticeScreen() {
   const dispatch = useDispatch();
   dispatch(startCurrentPractice(questions));
   return (
-      <PracticeQuestionPager shouldShowAnswerButton={true} />
+      <PracticeQuestionPager 
+        shouldShowAnswerButton={true} 
+        showAnswerOnChoiceSelected={true}
+      />
   );
 }
 

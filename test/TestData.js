@@ -1,7 +1,7 @@
 export const questions = 
 {
     '1' : {
-        "questionText":"You aare getting a permission error exception when trying to SSH into your Linux Instance",
+        "questionText":"You are getting a permission error exception when trying to SSH into your Linux Instance",
         "explanationText": "The exam expects you to know this.",
         "correctAnswers":[
           "the key is missing permissions chmod 0400"

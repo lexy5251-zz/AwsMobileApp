@@ -32,7 +32,7 @@ export default class QuestionPager extends React.Component {
   }
 
   render() {
-    const { questions, setChoiceForQuestion } = this.props;
+    const { questions, setChoiceForQuestion, showAnswerOnChoiceSelected, shouldShowAnswerButton } = this.props;
     return (
       <ViewPager ref={this.viewPager} style={styles.viewPager} initialPage={this.state.page}>
          {Object.entries(questions).map(([id, q], i) => {
@@ -40,7 +40,12 @@ export default class QuestionPager extends React.Component {
               <View key={i}>
                <QuestionComponent question={q} questionId={id} setChoice={(text) => {
                  setChoiceForQuestion(id, text);
-               }} toPrevPage={this.toPrevPage} toNextPage={this.toNextPage} shouldShowAnswerButton={this.props.shouldShowAnswerButton} />
+               }} 
+               toPrevPage={this.toPrevPage} 
+               toNextPage={this.toNextPage} 
+               shouldShowAnswerButton={shouldShowAnswerButton}
+               showAnswerOnChoiceSelected = {showAnswerOnChoiceSelected}
+              />
              </View>
             )
          })}

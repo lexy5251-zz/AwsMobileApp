@@ -2,19 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import 'react-native-gesture-handler';
 import ChoiceComponent from './ChoiceComponent';
-import { shuffle } from '../utils/utils';
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 export default class QuestionComponent extends React.Component {
     constructor(props) {
       super(props);
       const  { correctAnswers, wrongAnswers } = this.props.question;   
       this.state = {
-        showAnswers: false,
-        answers: shuffle(correctAnswers.concat(wrongAnswers)),
+        answers: correctAnswers.concat(wrongAnswers),
         selected: "",
         choiceText: "",
-        dialogVisible: false,
       }
     };
 
@@ -33,9 +29,12 @@ export default class QuestionComponent extends React.Component {
   
 
     render() {
-        const  { questionText, explanationText, correctAnswers } = this.props.question;        
-        const  { answers, choiceText } = this.state;
-        const { showAnswerOnChoiceSelected } = this.props;
+        let { questionText, explanationText, correctAnswers } = this.props.question;        
+        let { answers, choiceText } = this.state;
+        if(!choiceText) {
+          choiceText = this.props.question.choiceText;
+        }
+        const { showAnswerOnChoiceSelected, hideControlButtons } = this.props;
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <Text>IN QUESTION Component</Text>
@@ -56,35 +55,20 @@ export default class QuestionComponent extends React.Component {
                         onClick={this.handleChoiceClick}
                         checkedColor={checkedColor}
                         explanation={explanation}
+                        disabled={choiceText && showAnswerOnChoiceSelected}
                         />)
               })}
-              <View style={styles.fixToText}>
+              {!hideControlButtons && <View style={styles.fixToText}>
                  <Button
                    title="Prev"
                    onPress={() => this.onPrevButton()}
                  />
-                {this.props.shouldShowAnswerButton && <Button
-                   title="Show Answer"
-                   onPress={() => {
-                   this.setState({ dialogVisible: true });
-                   }}
-                />}
                  <Button
                    title="Next"
                    disabled={!choiceText}
                    onPress={() => this.onNextButton()}
                  />
-                 <Dialog
-                    visible={this.state.dialogVisible}
-                    onTouchOutside={() => {
-                      this.setState({ dialogVisible: false });
-                    }}
-                  >
-                  <DialogContent>
-                    <Text>{explanationText}</Text> 
-                  </DialogContent>
-                  </Dialog>
-               </View>
+               </View>}
             </View>
         );
     }

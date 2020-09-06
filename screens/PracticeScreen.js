@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import QuestionPager from '../components/QuestionPager';
-import { questions } from '../test/TestData';
+import { createQuestions } from '../test/TestData';
 import { useDispatch } from 'react-redux';
 import { connect } from 'react-redux';
 import { startCurrentPractice, setUserChoiceForCurrentPractice } from '../actions';
@@ -26,10 +26,9 @@ const PracticeQuestionPager = connect(mapStateToProps, mapDispatchToProps)(Quest
 
 export default function PracticeScreen() {
   const dispatch = useDispatch();
-  dispatch(startCurrentPractice(questions));
+  dispatch(startCurrentPractice(createQuestions()));
   return (
       <PracticeQuestionPager 
-        shouldShowAnswerButton={true} 
         showAnswerOnChoiceSelected={true}
       />
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import QuestionPager from '../components/QuestionPager';
-import { questions } from '../test/TestData';
+import { createQuestions } from '../test/TestData';
 import { useDispatch } from 'react-redux';
 import { startCurrentTest, setUserChoiceForCurrentTest } from '../actions';
 import { connect } from 'react-redux';
@@ -26,7 +26,7 @@ const TestQuestionPager = connect(mapStateToProps, mapDispatchToProps)(QuestionP
 
 export default function TestScreen() {
   const dispatch = useDispatch();
-  dispatch(startCurrentTest(questions));
+  dispatch(startCurrentTest(createQuestions()));
 
   return (
       <TestQuestionPager />

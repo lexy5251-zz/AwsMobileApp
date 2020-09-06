@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import 'react-native-gesture-handler';
 import ViewPager from '@react-native-community/viewpager';
 import QuestionComponent from './QuestionComponent';
-import PracticeResult from './PracticeResult';
+import QuestionResultComponent from './QuestionResultComponent';
 
 export default class QuestionPager extends React.Component {
 
@@ -32,24 +32,23 @@ export default class QuestionPager extends React.Component {
   }
 
   render() {
-    const { questions, setChoiceForQuestion, showAnswerOnChoiceSelected, shouldShowAnswerButton } = this.props;
+    const { questions, setChoiceForQuestion, showAnswerOnChoiceSelected } = this.props;
     return (
       <ViewPager ref={this.viewPager} style={styles.viewPager} initialPage={this.state.page}>
          {Object.entries(questions).map(([id, q], i) => {
             return (
               <View key={i}>
-               <QuestionComponent question={q} questionId={id} setChoice={(text) => {
+               <QuestionComponent question={q} setChoice={(text) => {
                  setChoiceForQuestion(id, text);
                }} 
                toPrevPage={this.toPrevPage} 
                toNextPage={this.toNextPage} 
-               shouldShowAnswerButton={shouldShowAnswerButton}
                showAnswerOnChoiceSelected = {showAnswerOnChoiceSelected}
               />
              </View>
             )
          })}
-         <PracticeResult />
+         <QuestionResultComponent questions={questions} />
        </ViewPager>
    );
   }

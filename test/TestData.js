@@ -1,5 +1,6 @@
-export const questions = 
+export const createQuestions = () =>
 {
+   return {
     '1' : {
         "questionText":"You are getting a permission error exception when trying to SSH into your Linux Instance",
         "explanationText": "The exam expects you to know this.",
@@ -23,4 +24,5 @@ export const questions =
            "The Linux instance is misconfigured",
         ]
      }
-}
+   };
+};

@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import 'react-native-gesture-handler';
 import { CheckBox } from 'react-native-elements';
 
-export default function ChoiceComponent({ onClick, text, checked, checkedColor, explanation }) {
+export default function ChoiceComponent({ onClick, text, checked, checkedColor, explanation, disabled }) {
   let style={ flex: 1, alignItems: 'center', justifyContent: 'center' };
   if(explanation) {
     style.borderColor = 'green';
@@ -17,6 +17,7 @@ export default function ChoiceComponent({ onClick, text, checked, checkedColor, 
         checkedColor={checkedColor}
         onPress={() => onClick(text)}
         checked={checked}
+        disabled={disabled}
       />
       {showExplanation && 
       (<Text>{explanation}</Text>)

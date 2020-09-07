@@ -29,7 +29,7 @@ export default function PracticeScreen() {
   dispatch(startCurrentPractice(createQuestions()));
   return (
       <PracticeQuestionPager 
-        showAnswerOnChoiceSelected={true}
+        showAnswerOnNext={true}
       />
   );
 }

@@ -17,7 +17,10 @@ export default QuestionResultComponent = ({ questions }) => {
       {Object.entries(questions).map(([id, q], i) => {
             return (
               <View key={i}>
-              <QuestionComponent question={q} hideControlButtons={true} showAnswerOnChoiceSelected={true}/>
+              <QuestionComponent 
+                question={q} 
+                hideControlButtons={true} 
+                alwaysShowAnswer={true}/>
              </View>
             )
          })}

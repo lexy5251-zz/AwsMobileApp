@@ -11,6 +11,7 @@ export default class QuestionComponent extends React.Component {
         answers: correctAnswers.concat(wrongAnswers),
         selected: "",
         choiceText: "",
+        showAnswer: this.props.alwaysShowAnswer
       }
     };
 
@@ -24,17 +25,23 @@ export default class QuestionComponent extends React.Component {
     }
   
     onNextButton = () => {
-      this.props.toNextPage();
+      if(this.state.showAnswer || !this.props.showAnswerOnNext ) {
+        this.props.toNextPage();
+        return;
+      }
+      this.setState({
+        showAnswer: true
+      });
     }
   
 
     render() {
         let { questionText, explanationText, correctAnswers } = this.props.question;        
-        let { answers, choiceText } = this.state;
+        let { answers, choiceText, showAnswer } = this.state;
         if(!choiceText) {
           choiceText = this.props.question.choiceText;
         }
-        const { showAnswerOnChoiceSelected, hideControlButtons } = this.props;
+        const { hideControlButtons } = this.props;
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <Text>IN QUESTION Component</Text>
@@ -43,7 +50,7 @@ export default class QuestionComponent extends React.Component {
                 let isCorrectChoice = correctAnswers.includes(choice);
                 let checkedColor = 'blue';
                 let explanation;
-                if(showAnswerOnChoiceSelected) {
+                if(showAnswer) {
                   checkedColor = isCorrectChoice ? 'green' : 'red';
                   explanation = isCorrectChoice && choiceText ? explanationText : "";
                 } 
@@ -55,7 +62,7 @@ export default class QuestionComponent extends React.Component {
                         onClick={this.handleChoiceClick}
                         checkedColor={checkedColor}
                         explanation={explanation}
-                        disabled={choiceText && showAnswerOnChoiceSelected}
+                        disabled={showAnswer}
                         />)
               })}
               {!hideControlButtons && <View style={styles.fixToText}>
@@ -65,7 +72,6 @@ export default class QuestionComponent extends React.Component {
                  />
                  <Button
                    title="Next"
-                   disabled={!choiceText}
                    onPress={() => this.onNextButton()}
                  />
                </View>}

@@ -6,10 +6,11 @@ export const setUserChoiceForCurrentPractice = (questionId, choiceText) => {
     }
 };
 
-export const startCurrentPractice = (questions) => {
+export const startCurrentPractice = (questions, startTimeMs) => {
     return {
         type: 'START_CURRENT_PRACTICE',
-        questions
+        questions,
+        startTimeMs
     }
 };
 
@@ -21,9 +22,10 @@ export const setUserChoiceForCurrentTest = (questionId, choiceText) => {
     }
 };
 
-export const startCurrentTest = (questions) => {
+export const startCurrentTest = (questions, startTimeMs) => {
     return {
         type: 'START_CURRENT_TEST',
-        questions
+        questions,
+        startTimeMs
     }
 };

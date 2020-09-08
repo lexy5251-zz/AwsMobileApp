@@ -9,9 +9,9 @@ const currentTest = (state = {}, action) => {
                 return {...state};
             }
         case 'START_CURRENT_TEST':
-            let {questions} = action;
-            if(questions) {
-                state = {questions};
+            let {questions, startTimeMs} = action;
+            if(questions && startTimeMs) {
+                state = {questions, startTimeMs};
                 return {...state};
             }
         default: return state;

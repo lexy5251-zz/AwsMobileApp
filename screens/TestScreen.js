@@ -18,15 +18,17 @@ const mapStateToProps = (state) => {
   if(!state.currentTest) return {questions: {}};
 
   return {
-    questions: state.currentTest.questions
+    questions: state.currentTest.questions,
+    startTimeMs: state.currentTest.startTimeMs
   }
 }
 
 const TestQuestionPager = connect(mapStateToProps, mapDispatchToProps)(QuestionPager);
 
 export default function TestScreen() {
+  const startTimeMs = Date.now();
   const dispatch = useDispatch();
-  dispatch(startCurrentTest(createQuestions()));
+  dispatch(startCurrentTest(createQuestions(), startTimeMs));
 
   return (
       <TestQuestionPager />

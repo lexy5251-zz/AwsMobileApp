@@ -9,9 +9,9 @@ const currentPractice = (state = {}, action) => {
                 return {...state};
             }
         case 'START_CURRENT_PRACTICE':
-            let { questions } = action;
-            if(questions) {
-                state = {questions};
+            let { questions, startTimeMs } = action;
+            if(questions && startTimeMs) {
+                state = {questions, startTimeMs};
                 return {...state};
             }
         default: 

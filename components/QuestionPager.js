@@ -32,12 +32,13 @@ export default class QuestionPager extends React.Component {
   }
 
   render() {
-    const { questions, setChoiceForQuestion, showAnswerOnNext } = this.props;
+    const { questions, setChoiceForQuestion, showAnswerOnNext, startTimeMs } = this.props;
     return (
       <ViewPager ref={this.viewPager} style={styles.viewPager} initialPage={this.state.page}>
          {Object.entries(questions).map(([id, q], i) => {
             return (
               <View key={i}>
+               <TimerComponent startTimeMs={startTimeMs} />
                <QuestionComponent question={q} setChoice={(text) => {
                  setChoiceForQuestion(id, text);
                }} 

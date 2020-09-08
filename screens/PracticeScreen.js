@@ -17,7 +17,8 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   if(!state.currentPractice) return {questions: {}};
   return {
-    questions: state.currentPractice.questions
+    questions: state.currentPractice.questions,
+    startTimeMs: state.currentPractice.startTimeMs
   }
    
 }
@@ -25,8 +26,9 @@ const mapStateToProps = (state) => {
 const PracticeQuestionPager = connect(mapStateToProps, mapDispatchToProps)(QuestionPager);
 
 export default function PracticeScreen() {
+  const startTimeMs = Date.now();
   const dispatch = useDispatch();
-  dispatch(startCurrentPractice(createQuestions()));
+  dispatch(startCurrentPractice(createQuestions(), startTimeMs));
   return (
       <PracticeQuestionPager 
         showAnswerOnNext={true}

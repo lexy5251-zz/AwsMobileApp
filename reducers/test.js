@@ -1,10 +1,10 @@
 const currentTest = (state = {}, action) => {
     switch(action.type) {
         case 'SET_USER_CHOICE_FOR_CURRENT_TEST':
-            let { questionId, choiceText } = action;
-            if(state.questions && action.questionId && state.questions[questionId]) {
+            let { questionIndex, choiceText } = action;
+            if(state.questions && action.questionIndex && state.questions[questionIndex]) {
                 let questions = {...state.questions};
-                questions[questionId].choiceText = choiceText;
+                questions[questionIndex].choiceText = choiceText;
                 state.questions = questions;
                 return {...state};
             }

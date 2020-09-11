@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setChoiceForQuestion: (id, text) => {
-      dispatch(setUserChoiceForCurrentTest(id, text));
+    setChoiceForQuestion: (index, text) => {
+      dispatch(setUserChoiceForCurrentTest(index, text));
     }
   }
 }

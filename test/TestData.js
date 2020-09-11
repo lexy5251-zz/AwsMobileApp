@@ -1,7 +1,7 @@
 export const createQuestions = () =>
 {
-   return {
-    '1' : {
+   return [{
+        "questionId": "432748367581657",
         "questionText":"You are getting a permission error exception when trying to SSH into your Linux Instance",
         "explanationText": "The exam expects you to know this.",
         "correctAnswers":[
@@ -12,8 +12,8 @@ export const createQuestions = () =>
           "The Linux instance is misconfigured",
        ]
     },
-    "2" : {      
-      
+    {      
+        "questionId": "43274831657",
         "questionText":"You are getting a network timeout when trying to SSH into your EC2 instance",
         "explanationText": "Any timeout errors means a misconfiguration of your security groups",
         "correctAnswers":[
@@ -24,5 +24,5 @@ export const createQuestions = () =>
            "The Linux instance is misconfigured",
         ]
      }
-   };
+   ];
 };

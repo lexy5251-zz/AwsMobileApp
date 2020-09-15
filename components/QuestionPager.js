@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import 'react-native-gesture-handler';
 import ViewPager from '@react-native-community/viewpager';
 import QuestionComponent from './QuestionComponent';
-import QuestionResultComponent from './QuestionResultComponent';
 import TimerComponent from './TimerComponent';
 
 export default class QuestionPager extends React.Component {
@@ -23,7 +22,7 @@ export default class QuestionPager extends React.Component {
   }
 
   handlePageChange = (e) => {
-    this.props.onPageChange(e.nativeEvent.position);  
+    this.props.onPageChange(e.nativeEvent.position);
     this.state.currentPage = e.nativeEvent.position;
   }
 
@@ -31,24 +30,32 @@ export default class QuestionPager extends React.Component {
     this.viewPager.current.setPage(this.state.currentPage-1);
   }
 
-  toNextPage = () => {
+  toNextPage = () => {  
+    if (this.state.currentPage == this.props.questions.length-1) {
+      this.props.onPagerFinish(); 
+      return;
+    }
+    
     this.viewPager.current.setPage(this.state.currentPage+1);
   }
 
   render() {
     const { questions, setChoiceForQuestion, showAnswerOnNext, startTimeMs } = this.props;
+    const { currentPage } = this.state;
     return (
       <ViewPager
       ref={this.viewPager}
       style={styles.viewPager}
       initialPage={this.state.initialPage}
       onPageSelected={this.handlePageChange}
+      scrollEnabled={false}
       >
          {questions.map((q, i) => {
             console.log('reder page: ', i);
             return (
               <View key={i}>
                <TimerComponent startTimeMs={startTimeMs} />
+               <Text style={styles.pageNumber}>{currentPage+1}/20</Text>
                <QuestionComponent question={q} setChoice={(text) => {
                  setChoiceForQuestion(i, text);
                }} 
@@ -59,7 +66,7 @@ export default class QuestionPager extends React.Component {
              </View>
             )
          })}
-         {/* <QuestionResultComponent questions={questions} /> */}
+         {/* <ResultComponent questions={questions} /> */}
        </ViewPager>
    );
   }
@@ -73,5 +80,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
+  pageNumber: {
+    textAlign: 'center'
+  }
 });
 

@@ -17,23 +17,27 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   if(!state.currentPractice) return {questions: []};
-  console.log('initial page in redux', state.currentPractice.currentQuestionIndex);
   return {
     questions: state.currentPractice.questions,
     startTimeMs: state.currentPractice.startTimeMs,
     initialPage: state.currentPractice.currentQuestionIndex
   }
-   
 }
 
 const PracticeQuestionPager = connect(mapStateToProps, mapDispatchToProps)(QuestionPager);
 
-export default function PracticeScreen() { 
-  return (
-      <PracticeQuestionPager 
-        showAnswerOnNext={true}
-      />
+export default class PracticeScreen extends React.Component {
+  handlePagerFinish = () => {
+    this.props.navigation.navigate('Result');
+  }
+ 
+  render() {
+    return (
+          <PracticeQuestionPager 
+            showAnswerOnNext={true}
+            onPagerFinish={this.handlePagerFinish}
+          /> 
   );
 }
-
+}
 

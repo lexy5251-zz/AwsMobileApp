@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import QuestionPager from '../components/QuestionPager';
 import { StyleSheet, View } from 'react-native';
-import QuestionResultComponent from '../components/QuestionResultComponent';
+import ResultComponent from '../components/ResultComponent';
 import TimerComponent from '../components/TimerComponent';
 
 
@@ -41,7 +41,7 @@ export default SessionScreen = ({session, onQuestionChoiceChange, onCurrentQuest
         showAnswerOnNext={showAnswerOnNext} />
         </View>}
       {
-        showResult && <QuestionResultComponent questions={session.questions} />
+        showResult && <ResultComponent questions={session.questions} />
       }
     </View>
   );

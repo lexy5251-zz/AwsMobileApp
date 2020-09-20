@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import 'react-native-gesture-handler';
 import ChoiceComponent from './ChoiceComponent';
 
 export default class QuestionComponent extends React.Component {

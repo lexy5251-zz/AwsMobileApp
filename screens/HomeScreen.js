@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import { createQuestions } from '../test/TestData';
 import { startCurrentPractice, startCurrentTest } from '../actions';

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import 'react-native-gesture-handler';
 import { CheckBox } from 'react-native-elements';
 
 export default function ChoiceComponent({ onClick, text, checked, checkedColor, explanation, disabled }) {

@@ -1,39 +1,26 @@
-import React from 'react';
-import 'react-native-gesture-handler';
-import QuestionPager from '../components/QuestionPager';
 import { connect } from 'react-redux';
-import { setCurrentQuestionIndex, setUserChoiceForCurrentPractice } from '../actions';
+import { setCurrentPracticeQuestionIndex, setUserChoiceForCurrentPractice, endCurrentPractice } from '../actions';
+import SessionScreen from './SessionScreen';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setChoiceForQuestion: (index, text) => {
+    onQuestionChoiceChange: (index, text) => {
       dispatch(setUserChoiceForCurrentPractice(index, text));
     },
-    onPageChange: (page) => {
-      dispatch(setCurrentQuestionIndex(page));
-    }
+    onCurrentQuestionChange: (index) => {
+      dispatch(setCurrentPracticeQuestionIndex(index));
+    },
+    onSessionEnd: () => {
+      dispatch(endCurrentPractice());
+    },
   }
 }
 
 const mapStateToProps = (state) => {
-  if(!state.currentPractice) return {questions: []};
-  console.log('initial page in redux', state.currentPractice.currentQuestionIndex);
   return {
-    questions: state.currentPractice.questions,
-    startTimeMs: state.currentPractice.startTimeMs,
-    initialPage: state.currentPractice.currentQuestionIndex
+    session: state.currentPractice,
+    showAnswerOnNext: true,
   }
-   
 }
 
-const PracticeQuestionPager = connect(mapStateToProps, mapDispatchToProps)(QuestionPager);
-
-export default function PracticeScreen() { 
-  return (
-      <PracticeQuestionPager 
-        showAnswerOnNext={true}
-      />
-  );
-}
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(SessionScreen);

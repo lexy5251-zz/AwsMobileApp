@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import 'react-native-gesture-handler';
 import ViewPager from '@react-native-community/viewpager';
 import QuestionComponent from './QuestionComponent';
-import QuestionResultComponent from './QuestionResultComponent';
 import TimerComponent from './TimerComponent';
 
 export default class QuestionPager extends React.Component {
@@ -32,11 +31,15 @@ export default class QuestionPager extends React.Component {
   }
 
   toNextPage = () => {
+    if(this.state.currentPage == this.props.questions.length - 1) {
+      this.props.onPagerEnd();
+      return
+    }
     this.viewPager.current.setPage(this.state.currentPage+1);
   }
 
   render() {
-    const { questions, setChoiceForQuestion, showAnswerOnNext, startTimeMs } = this.props;
+    const { questions, onChoiceSelected, showAnswerOnNext, startTimeMs } = this.props;
     return (
       <ViewPager
       ref={this.viewPager}
@@ -45,12 +48,11 @@ export default class QuestionPager extends React.Component {
       onPageSelected={this.handlePageChange}
       >
          {questions.map((q, i) => {
-            console.log('reder page: ', i);
             return (
               <View key={i}>
                <TimerComponent startTimeMs={startTimeMs} />
                <QuestionComponent question={q} setChoice={(text) => {
-                 setChoiceForQuestion(i, text);
+                 onChoiceSelected(i, text);
                }} 
                toPrevPage={this.toPrevPage} 
                toNextPage={this.toNextPage} 
@@ -59,7 +61,6 @@ export default class QuestionPager extends React.Component {
              </View>
             )
          })}
-         {/* <QuestionResultComponent questions={questions} /> */}
        </ViewPager>
    );
   }

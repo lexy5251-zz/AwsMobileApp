@@ -6,17 +6,22 @@ export const setUserChoiceForCurrentPractice = (questionIndex, choiceText) => {
     }
 };
 
-export const startCurrentPractice = (questions, startTimeMs) => {
+export const startCurrentPractice = (questions) => {
     return {
         type: 'START_CURRENT_PRACTICE',
         questions,
-        startTimeMs,
     }
 };
 
-export const setCurrentQuestionIndex = (questionIndex) => {
+export const endCurrentPractice = () => {
     return {
-        type: 'SET_CURRENT_QUESTION_INDEX',
+        type: 'END_CURRENT_PRACTICE',
+    }
+};
+
+export const setCurrentPracticeQuestionIndex = (questionIndex) => {
+    return {
+        type: 'SET_CURRENT_PRACTICE_QUESTION_INDEX',
         questionIndex,
     }
 }
@@ -29,10 +34,22 @@ export const setUserChoiceForCurrentTest = (questionIndex, choiceText) => {
     }
 };
 
-export const startCurrentTest = (questions, startTimeMs) => {
+export const startCurrentTest = (questions) => {
     return {
         type: 'START_CURRENT_TEST',
         questions,
-        startTimeMs
     }
 };
+
+export const endCurrentTest = () => {
+    return {
+        type: 'END_CURRENT_TEST',
+    }
+};
+
+export const setCurrentTestQuestionIndex = (questionIndex) => {
+    return {
+        type: 'SET_CURRENT_TEST_QUESTION_INDEX',
+        questionIndex,
+    }
+}

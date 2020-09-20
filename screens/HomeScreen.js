@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import { createQuestions } from '../test/TestData';
-import { startCurrentPractice } from '../actions';
+import { startCurrentPractice, startCurrentTest } from '../actions';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -35,13 +35,13 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.buttonContainer}>
     <TouchableOpacity
       style = {styles.button}
-      onPress={() => navigation.navigate('Practice')}
+      onPress={() => onNewTestPressed(navigation, dispatch)}
     >
     <Text style={styles.text}>Start New</Text>
     </TouchableOpacity>  
     <TouchableOpacity
     style = {styles.button}
-    onPress={() => navigation.navigate('Test')}
+    onPress={() =>onResumeTestPressed(navigation, dispatch)}
     >
     <Text style={styles.text}>Resume</Text>
     </TouchableOpacity>  
@@ -57,14 +57,21 @@ export default function HomeScreen({ navigation }) {
 }
 
 const onNewPracticePressed = (navigation, dispatch) => {
-  const startTimeMs = Date.now();
-
-  dispatch(startCurrentPractice(createQuestions(), startTimeMs));
+  dispatch(startCurrentPractice(createQuestions()));
   navigation.navigate('Practice');
 }
 
 const onResumePracticePressed = (navigation, dispatch) => {
   navigation.navigate('Practice');
+}
+
+const onNewTestPressed = (navigation, dispatch) => {
+  dispatch(startCurrentTest(createQuestions()));
+  navigation.navigate('Test');
+}
+
+const onResumeTestPressed = (navigation, dispatch) => {
+  navigation.navigate('Test');
 }
 
 

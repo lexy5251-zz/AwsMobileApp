@@ -3,7 +3,7 @@ import { Text, View, ScrollView } from 'react-native';
 import 'react-native-gesture-handler';
 import QuestionComponent from './QuestionComponent';
 
-export default QuestionResultComponent = ({ questions }) => {
+export default ResultComponent = ({ questions }) => {
   
   const correctAnswers = Object.values(questions).filter(q => {
       return q.correctAnswers.includes(q.choiceText);

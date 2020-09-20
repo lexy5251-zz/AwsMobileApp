@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import PracticeScreen from './screens/PracticeScreen';
 import TestScreen from './screens/TestScreen';
-import ReviewScreen from './screens/ReviewScreen';
+import ResultScreen from './screens/ResultScreen';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import rootReducer from './reducers';
@@ -24,7 +24,7 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Practice" component={PracticeScreen} />
           <Stack.Screen name="Test" component={TestScreen} />
-          <Stack.Screen name="Review" component={ReviewScreen} />
+          <Stack.Screen name="Result" component={ResultScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

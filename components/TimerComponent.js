@@ -28,7 +28,7 @@ export default function TimerComponent({ startTimeMs, baseDuration }) {
   
   return (
     <View>
-      <Text>ahahah {timerValue}</Text>
+      <Text>{timerValue}</Text>
     </View>
   );
 }

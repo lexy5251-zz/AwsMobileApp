@@ -50,7 +50,6 @@ export default class QuestionPager extends React.Component {
          {questions.map((q, i) => {
             return (
               <View key={i}>
-               <TimerComponent startTimeMs={startTimeMs} />
                <Text style={styles.pageNumber}>{this.state.currentPage+1}/20</Text>
                <QuestionComponent question={q} setChoice={(text) => {
                  onChoiceSelected(i, text);

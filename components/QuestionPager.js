@@ -30,18 +30,30 @@ export default class QuestionPager extends React.Component {
     this.viewPager.current.setPage(this.state.currentPage-1);
   }
 
+<<<<<<< HEAD
+  toNextPage = () => {
+    if(this.state.currentPage == this.props.questions.length - 1) {
+      this.props.onPagerEnd();
+      return
+    }
+=======
   toNextPage = () => {  
     if (this.state.currentPage == this.props.questions.length-1) {
       this.props.onPagerFinish(); 
       return;
     }
     
+>>>>>>> master
     this.viewPager.current.setPage(this.state.currentPage+1);
   }
 
   render() {
+<<<<<<< HEAD
+    const { questions, onChoiceSelected, showAnswerOnNext, startTimeMs } = this.props;
+=======
     const { questions, setChoiceForQuestion, showAnswerOnNext, startTimeMs } = this.props;
     const { currentPage } = this.state;
+>>>>>>> master
     return (
       <ViewPager
       ref={this.viewPager}
@@ -51,13 +63,12 @@ export default class QuestionPager extends React.Component {
       scrollEnabled={false}
       >
          {questions.map((q, i) => {
-            console.log('reder page: ', i);
             return (
               <View key={i}>
                <TimerComponent startTimeMs={startTimeMs} />
                <Text style={styles.pageNumber}>{currentPage+1}/20</Text>
                <QuestionComponent question={q} setChoice={(text) => {
-                 setChoiceForQuestion(i, text);
+                 onChoiceSelected(i, text);
                }} 
                toPrevPage={this.toPrevPage} 
                toNextPage={this.toNextPage} 
@@ -66,7 +77,10 @@ export default class QuestionPager extends React.Component {
              </View>
             )
          })}
+<<<<<<< HEAD
+=======
          {/* <ResultComponent questions={questions} /> */}
+>>>>>>> master
        </ViewPager>
    );
   }

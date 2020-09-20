@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 export default function App() {
   const store = createStore(rootReducer); 
   store.subscribe(() => {
-    //console.log('store is: ', store.getState());
+    console.log('store is: ', store.getState());
   })
   return (
     <Provider store={store}>
@@ -30,4 +30,3 @@ export default function App() {
     </Provider>
   );
 }
-

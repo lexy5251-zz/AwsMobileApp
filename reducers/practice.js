@@ -21,6 +21,12 @@ const currentPractice = (state = {}, action) => {
                 state.questions[state.currentQuestionIndex].endTime = now;
             }
             return {...state};
+        case 'SET_CURRENT_PRACTICE':
+            let {currentPractice} = action;
+            if(currentPractice) {
+                return {...currentPractice};
+            }
+            return state;
         case 'SET_CURRENT_PRACTICE_QUESTION_INDEX':
             questionIndex = action.questionIndex;
             now = Date.now();

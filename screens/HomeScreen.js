@@ -1,11 +1,17 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createQuestions } from '../test/TestData';
+import _ from 'lodash'
 import { startCurrentPractice, startCurrentTest } from '../actions';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
+  const currentPractice = useSelector(state => state.currentPractice);
+  const currentTest = useSelector(state => state.currentTest);
+  console.log(">>>>>>>home screen current practice", currentPractice, (!currentPractice && true));
+
+  console.log(">>>>>>>home screen current test", currentTest, (!currentTest && true));
 
   return (
     <View style={styles.container}>
@@ -19,6 +25,7 @@ export default function HomeScreen({ navigation }) {
       </TouchableOpacity>  
       <TouchableOpacity
       style = {styles.button}
+      disabled = {_.isEmpty(currentPractice)}
       onPress={() =>onResumePracticePressed(navigation, dispatch)}
       >
       <Text style={styles.text}>Resume</Text>
@@ -40,6 +47,7 @@ export default function HomeScreen({ navigation }) {
     </TouchableOpacity>  
     <TouchableOpacity
     style = {styles.button}
+    disabled = {_.isEmpty(currentTest)}
     onPress={() =>onResumeTestPressed(navigation, dispatch)}
     >
     <Text style={styles.text}>Resume</Text>

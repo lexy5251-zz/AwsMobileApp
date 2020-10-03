@@ -6,12 +6,16 @@ import HomeScreen from './screens/HomeScreen';
 import PracticeScreen from './screens/PracticeScreen';
 import TestScreen from './screens/TestScreen';
 import ResultScreen from './screens/ResultScreen';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { Provider, useDispatch } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import { AppState } from "react-native";
+import {saveCurrentTest, saveCurrentPractice, restoreCurrentPractice, restoreCurrentTest} from './actions'
 
 const App = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     AppState.addEventListener('change', handleChange);  
   
@@ -20,10 +24,17 @@ const App = () => {
     }
   }, []);
   
-  
-  const handleChange = (newState) => {
+  const handleChange = async (newState) => {
     if (newState === "active") {
-      console.log(">>>>>hahaha");
+      console.log('>>>>restoring sessions');
+      dispatch(restoreCurrentTest());
+      dispatch(restoreCurrentPractice());
+      return;
+    } else if (newState == 'background') {
+      console.log('>>>>saving sessions');
+      dispatch(saveCurrentTest());
+      dispatch(saveCurrentPractice());
+      return;
     }
   }
   const Stack = createStackNavigator();
@@ -39,7 +50,7 @@ const App = () => {
 }
 
 export default function AppWrapper() {
-  const store = createStore(rootReducer); 
+  const store = createStore(rootReducer, applyMiddleware(thunk)); 
   store.subscribe(() => {
     console.log('store is: ', store.getState());
   })

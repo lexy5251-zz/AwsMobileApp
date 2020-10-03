@@ -1,3 +1,5 @@
+import {getData, storeData} from '../data'
+
 const currentTest = (state = {}, action) => {
     switch(action.type) {
         case 'SET_USER_CHOICE_FOR_CURRENT_TEST':
@@ -21,6 +23,12 @@ const currentTest = (state = {}, action) => {
                 state.questions[state.currentQuestionIndex].endTime = now;
             }
             return {...state};
+        case 'SET_CURRENT_TEST':
+            let {currentTest} = action;
+            if(currentTest) {
+                return {...currentTest};
+            }
+            return state;
         case 'SET_CURRENT_TEST_QUESTION_INDEX':
             questionIndex = action.questionIndex;
             now = Date.now();

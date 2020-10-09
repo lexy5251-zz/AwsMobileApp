@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createQuestions } from '../test/TestData';
 import _ from 'lodash'
 import { startCurrentPractice, startCurrentTest } from '../actions';
+import {pickQuestionsRandomly} from '../data'
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -64,8 +65,16 @@ export default function HomeScreen({ navigation }) {
 }
 
 const onNewPracticePressed = (navigation, dispatch) => {
-  dispatch(startCurrentPractice(createQuestions()));
-  navigation.navigate('Practice');
+  pickQuestionsRandomly('saa_c01', 5).then(questions=> {
+    if (questions) {
+      console.log('questions', questions);
+      dispatch(startCurrentPractice(questions));
+      navigation.navigate('Practice');
+      return;
+    } 
+  }).catch(err => {
+    console.log(err);
+  });
 }
 
 const onResumePracticePressed = (navigation, dispatch) => {

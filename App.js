@@ -13,18 +13,18 @@ import rootReducer from './reducers';
 import { AppState } from "react-native";
 import {saveCurrentTest, saveCurrentPractice, restoreCurrentPractice, restoreCurrentTest} from './actions'
 
+
 const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     AppState.addEventListener('change', handleChange);  
-  
     return () => {
       AppState.removeEventListener('change', handleChange);  
     }
   }, []);
   
-  const handleChange = async (newState) => {
+  const handleChange = (newState) => {
     if (newState === "active") {
       console.log('>>>>restoring sessions');
       dispatch(restoreCurrentTest());

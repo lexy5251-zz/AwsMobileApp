@@ -65,16 +65,7 @@ export default function HomeScreen({ navigation }) {
 }
 
 const onNewPracticePressed = (navigation, dispatch) => {
-  pickQuestionsRandomly('saa_c01', 5).then(questions=> {
-    if (questions) {
-      console.log('questions', questions);
-      dispatch(startCurrentPractice(questions));
-      navigation.navigate('Practice');
-      return;
-    } 
-  }).catch(err => {
-    console.log(err);
-  });
+  navigation.navigate('Practice');
 }
 
 const onResumePracticePressed = (navigation, dispatch) => {

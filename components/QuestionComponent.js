@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import ChoiceComponent from './ChoiceComponent';
+import _ from 'lodash';
 
 export default class QuestionComponent extends React.Component {
   constructor(props) {
@@ -8,15 +9,21 @@ export default class QuestionComponent extends React.Component {
     const { correctAnswers, wrongAnswers } = this.props.question;
     this.state = {
       answers: [],
-      selected: "",
-      choiceText: "",
+      selectedChoices: [],
       showAnswer: this.props.alwaysShowAnswer
     }
   };
 
   handleChoiceClick = (text) => {
-    this.props.onChoicesChange([text]);
-    this.setState({ choiceText: text });
+    let currentChoices = this.state.selectedChoices;
+
+    if(currentChoices.includes(text)) {
+      currentChoices = currentChoices.filter(item => item !== text);
+    } else {
+      currentChoices.push(text);
+    }
+    this.setState({ selectedChoices: currentChoices });
+    this.props.onChoicesChange(currentChoices);
   };
 
   onPrevButton = () => {
@@ -40,10 +47,10 @@ export default class QuestionComponent extends React.Component {
 
   render() {
     let { text, explanation, correctAnswers, wrongAnswers } = this.props.question;
-    let { choiceText, showAnswer } = this.state;
+    let { selectedChoices, showAnswer } = this.state;
     let answers = correctAnswers.concat(wrongAnswers)
-    if (!choiceText) {
-      choiceText = this.props.question.choiceText;
+    if (!selectedChoices) {
+      selectedChoices = this.props.question.selectedChoices;
     }
     const { hideControlButtons } = this.props;
     return (
@@ -55,7 +62,6 @@ export default class QuestionComponent extends React.Component {
           let checkedColor = 'blue';
           if (showAnswer) {
             checkedColor = isCorrectChoice ? 'green' : 'red';
-            explanation = isCorrectChoice && choiceText ? explanation : "";
           } else {
             explanation = '';
           }
@@ -63,7 +69,7 @@ export default class QuestionComponent extends React.Component {
           return (<ChoiceComponent
             key={i}
             text={choice}
-            checked={choiceText === choice || (isCorrectChoice && showAnswer)}
+            checked={selectedChoices.includes(choice) || (isCorrectChoice && showAnswer)}
             onClick={this.handleChoiceClick}
             checkedColor={checkedColor}
             explanation={explanation}
@@ -91,4 +97,3 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
 });
-

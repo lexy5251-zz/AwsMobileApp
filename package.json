@@ -17,7 +17,7 @@
     "lodash": "^4.17.20",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
     "react-native-elements": "^2.3.2",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-popup-dialog": "^0.18.3",
@@ -29,7 +29,10 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "victory-native": "^35.0.1"
+    "victory-native": "^35.0.1",
+    "expo-file-system": "~9.2.0",
+    "expo-asset": "~8.2.0",
+    "expo-sqlite": "~8.4.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

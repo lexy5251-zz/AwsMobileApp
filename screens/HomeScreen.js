@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import React, {useState, useEffect} from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { createQuestions } from '../test/TestData';
@@ -7,15 +8,44 @@ import _ from 'lodash'
 import { startCurrentPractice, startCurrentTest } from '../actions';
 import { Card } from 'react-native-elements';
 import { VictoryBar, VictoryStack, VictoryLabel } from "victory-native";
+import {getData} from '../data'
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const currentPractice = useSelector(state => state.currentPractice);
   const currentTest = useSelector(state => state.currentTest);
+  const [progress, setProgress] = useState({total: 1185});
   console.log(">>>>>>>home screen current practice", currentPractice, (!currentPractice && true));
 
   console.log(">>>>>>>home screen current test", currentTest, (!currentTest && true));
 
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('>>>>>focus!!');
+      getProgress('c01').then(p => setProgress(p));
+      return () => {};
+    }, [])
+  );
+
+  const getProgress = (examVersion) => {
+    let key = `@${examVersion}_progress`;
+    return getData(key).then((v) => {
+      console.log(">>>>>>v", v);
+
+      let progress = {total: 1185, learned: 0, mistakes: 0};
+      if (!v) {
+        return progress;
+      }
+      let wrongNum = Object.values(v).filter(i => i === 'wrong').length;
+      let correctNum = Object.values(v).filter(i => i === 'correct').length;
+      progress.learned = correctNum;
+      progress.mistakes = wrongNum;
+      return progress;
+    });
+  }
+  
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
@@ -142,7 +172,6 @@ export default function HomeScreen({ navigation }) {
 }
 
 const onNewPracticePressed = (navigation, dispatch) => {
-  dispatch(startCurrentPractice(createQuestions()));
   navigation.navigate('Practice');
 }
 

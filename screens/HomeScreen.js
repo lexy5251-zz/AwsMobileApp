@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { createQuestions } from '../test/TestData';
@@ -6,7 +6,7 @@ import _ from 'lodash'
 import { startCurrentPractice, startCurrentTest } from '../actions';
 import { Card } from 'react-native-elements';
 import { VictoryBar, VictoryStack, VictoryLabel, VictoryContainer } from "victory-native";
-import {getData} from '../data'
+import { getData } from '../data'
 import { useFocusEffect } from '@react-navigation/native';
 import ProgressBar from '../components/ProgressBar';
 
@@ -15,22 +15,19 @@ export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const currentPractice = useSelector(state => state.currentPractice);
   const currentTest = useSelector(state => state.currentTest);
-  const [progress, setProgress] = useState({total: 0});
+  const [progress, setProgress] = useState({});
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('>>>>>focus!!');
       getProgress('c01').then(p => setProgress(p));
-      return () => {};
+      return () => { };
     }, [])
   );
 
   const getProgress = (examVersion) => {
     let key = `@${examVersion}_progress`;
     return getData(key).then((v) => {
-      console.log(">>>>>>v", v);
-
-      let progress = {total: 1185, learned: 0, mistakes: 0};
+      let progress = { total: 1185, learned: 0, mistakes: 0 };
       if (!v) {
         return progress;
       }
@@ -44,151 +41,59 @@ export default function HomeScreen({ navigation }) {
 
   const progressToBarData = (progress) => {
     let data = [];
+    if (!progress || !progress.total) {
+      return data;
+    }
     let v1 = progress.learned / progress.total * 100;
     if (v1) {
-      if(v1<5) {
+      if (v1 < 5) {
         v1 = 5;
       }
-      data.push({value: v1, color: '#49CFAE'});
+      data.push({ value: v1, color: '#49CFAE' });
     }
     let v2 = progress.mistakes / progress.total * 100;
     if (v2) {
-      if(v2<5) {
+      if (v2 < 5) {
         v2 = 5;
       }
-      data.push({value: v2, color: '#EC5563'});
+      data.push({ value: v2, color: '#EC5563' });
     }
-    data.push({value: 100 - v1 - v2, color: '#C2C0C0'});
+    data.push({ value: 100 - v1 - v2, color: '#C2C0C0' });
     return data;
   }
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
-          <Card containerStyle={{
-            // borderRadius: 10,
-            // paddingTop: 10,
-            // paddingLeft: 15,
-            // paddingRight: 15,
-            // borderRadius: 10,
-            // shadowOffset:{ width: 5, height: 5 },
-            shadowColor: '#C2C0C0',
-            shadowOpacity: 0.2,
-            border: 'none',
-            backgroundColor: '#FAFAFB',
-            elevation: 5
-          }}>
-            <View style={styles.cardTitle}>
-              <Text style={styles.textFont}>Sample</Text>
-              <Text style={styles.total}>Total {progress.total} Questions</Text>
-            </View>
-            <View style={{height: 50, width: '100%'}}>
-            <ProgressBar data={progressToBarData(progress)} />
-            </View>
-            {/* <VictoryStack 
-              horizontal
-              containerComponent = {<VictoryContainer responsive={false}/>}
-              width = {300}
-              height={110}
-              colorScale={['#49CFAE', '#EC5563', '#C2C0C0']}
-              domain = {{y:[0, 100]}}
-              //domainPadding={{ y: -70,28 }}
-              style={{
-                data: {
-                  width: 30,
-                },
-                // labels: { padding: -80 },
-              }}
-            >
-            <VictoryBar 
-              data={[{ x: 'progress', y: 10 }]}
-              labels={({ datum }) => `Correct: ${datum.y}`}
-              style={{ 
-                labels: { 
-                  fill: "white",
-                  fontSize: 12,
-                } 
-              }}
-              
-            />
-            <VictoryBar 
-              data={[{ x: 'progress', y: 10 }]} 
-              labels={({ datum }) => `Wrong: ${datum.y}`}
-              style={{
-                labels: { 
-                  fill: "white",                   
-                  fontSize: 12,
-                }
-              }}
-              />
-            <VictoryBar 
-              data={[{ x: 'progress', y: 90 }]} 
-              labels={({ datum }) => `Unfinished: ${datum.y}`}
-              style={{
-                labels: { 
-                  fill: "white",                   
-                  fontSize: 12,
-                }
-              }}
-            />
-          </VictoryStack>             */}
-          <View style={styles.buttonContainer}>
+      <Card containerStyle={{
+        shadowColor: '#C2C0C0',
+        shadowOpacity: 0.2,
+        border: 'none',
+        backgroundColor: '#FAFAFB',
+        elevation: 5
+      }}>
+        <View style={styles.cardTitle}>
+          <Text style={styles.textFont}>Sample</Text>
+          <Text style={styles.total}>Total {progress ? progress.total : 0} Questions</Text>
+        </View>
+        <View style={{ height: 50, width: '100%' }}>
+          <ProgressBar data={progressToBarData(progress)} />
+        </View>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style = {styles.button}
+            style={styles.button}
             onPress={() => onNewPracticePressed(navigation, dispatch)}
-            >
+          >
             <Text style={styles.text}>Practice</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style = {styles.button}
+            style={styles.button}
             onPress={() => onNewTestPressed(navigation, dispatch)}
-            >
+          >
             <Text style={styles.text}>Test</Text>
-          </TouchableOpacity>  
-          </View>
-          </Card>
-        {/* <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style = {styles.button}
-            onPress={() => onNewPracticePressed(navigation, dispatch)}
-            >
-            <Text style={styles.text}>Start New Practice</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style = {styles.button}
-              onPress={() => onNewTestPressed(navigation, dispatch)}
-            >
-            <Text style={styles.text}>Start New Test</Text>
-          </TouchableOpacity>  
-          <TouchableOpacity
-          style = {styles.button}
-          disabled = {_.isEmpty(currentPractice)}
-          onPress={() =>onResumePracticePressed(navigation, dispatch)}
-          >
-          <Text style={styles.text}>Resume</Text>
-          </TouchableOpacity>  
-          <TouchableOpacity
-            style = {styles.button}
-            onPress={() => navigation.navigate('Review')}
-          >
-          <Text style={styles.text}>History</Text>
-          </TouchableOpacity>  
         </View>
-        <View style={styles.buttonContainer}>
-        <TouchableOpacity
-        style = {styles.button}
-        disabled = {_.isEmpty(currentTest)}
-        onPress={() =>onResumeTestPressed(navigation, dispatch)}
-        >
-        <Text style={styles.text}>Resume</Text>
-        </TouchableOpacity>  
-        <TouchableOpacity
-          style = {styles.button}
-          onPress={() => navigation.navigate('Review')}
-        >
-        <Text style={styles.text}>History</Text>
-        </TouchableOpacity>  
-      </View> */}
+      </Card>
     </View>
   );
 }
@@ -213,9 +118,9 @@ const onResumeTestPressed = (navigation, dispatch) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
     marginTop: '4%',
-    padding: '2%',    
+    padding: '2%',
   },
 
   titleText: {
@@ -225,7 +130,7 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    flexWrap: 'wrap', 
+    flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -236,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1BC5E',
     borderRadius: 5,
     padding: 12,
-    shadowOffset:{ width: 5, height: 5 },
+    shadowOffset: { width: 5, height: 5 },
     shadowColor: '#C2C0C0',
     shadowOpacity: 0.2,
     elevation: 5
@@ -245,7 +150,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   cardTitle: {
-    display:'flex',
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'baseline'

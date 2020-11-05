@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import React, {useState, useEffect} from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,19 +5,17 @@ import { createQuestions } from '../test/TestData';
 import _ from 'lodash'
 import { startCurrentPractice, startCurrentTest } from '../actions';
 import { Card } from 'react-native-elements';
-import { VictoryBar, VictoryStack, VictoryLabel } from "victory-native";
+import { VictoryBar, VictoryStack, VictoryLabel, VictoryContainer } from "victory-native";
 import {getData} from '../data'
 import { useFocusEffect } from '@react-navigation/native';
+import ProgressBar from '../components/ProgressBar';
 
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const currentPractice = useSelector(state => state.currentPractice);
   const currentTest = useSelector(state => state.currentTest);
-  const [progress, setProgress] = useState({total: 1185});
-  console.log(">>>>>>>home screen current practice", currentPractice, (!currentPractice && true));
-
-  console.log(">>>>>>>home screen current test", currentTest, (!currentTest && true));
+  const [progress, setProgress] = useState({total: 0});
 
   useFocusEffect(
     React.useCallback(() => {
@@ -45,17 +41,37 @@ export default function HomeScreen({ navigation }) {
       return progress;
     });
   }
+
+  const progressToBarData = (progress) => {
+    let data = [];
+    let v1 = progress.learned / progress.total * 100;
+    if (v1) {
+      if(v1<5) {
+        v1 = 5;
+      }
+      data.push({value: v1, color: '#49CFAE'});
+    }
+    let v2 = progress.mistakes / progress.total * 100;
+    if (v2) {
+      if(v2<5) {
+        v2 = 5;
+      }
+      data.push({value: v2, color: '#EC5563'});
+    }
+    data.push({value: 100 - v1 - v2, color: '#C2C0C0'});
+    return data;
+  }
   
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
           <Card containerStyle={{
-            borderRadius: 10,
-            paddingTop: 10,
-            paddingLeft: 15,
-            paddingRight: 15,
-            borderRadius: 10,
-            shadowOffset:{ width: 5, height: 5 },
+            // borderRadius: 10,
+            // paddingTop: 10,
+            // paddingLeft: 15,
+            // paddingRight: 15,
+            // borderRadius: 10,
+            // shadowOffset:{ width: 5, height: 5 },
             shadowColor: '#C2C0C0',
             shadowOpacity: 0.2,
             border: 'none',
@@ -64,22 +80,28 @@ export default function HomeScreen({ navigation }) {
           }}>
             <View style={styles.cardTitle}>
               <Text style={styles.textFont}>Sample</Text>
-              <Text style={styles.total}>Total 20 Questions</Text>
+              <Text style={styles.total}>Total {progress.total} Questions</Text>
             </View>
-            <VictoryStack 
+            <View style={{height: 50, width: '100%'}}>
+            <ProgressBar data={progressToBarData(progress)} />
+            </View>
+            {/* <VictoryStack 
               horizontal
+              containerComponent = {<VictoryContainer responsive={false}/>}
+              width = {300}
               height={110}
               colorScale={['#49CFAE', '#EC5563', '#C2C0C0']}
-              domainPadding={{ x: [-100, 55], y: [-70, 28] }}
+              domain = {{y:[0, 100]}}
+              //domainPadding={{ y: -70,28 }}
               style={{
                 data: {
                   width: 30,
                 },
-                labels: { padding: -80 },
+                // labels: { padding: -80 },
               }}
             >
             <VictoryBar 
-              data={[{ x: 'progress', y: 45 }]}
+              data={[{ x: 'progress', y: 10 }]}
               labels={({ datum }) => `Correct: ${datum.y}`}
               style={{ 
                 labels: { 
@@ -90,7 +112,7 @@ export default function HomeScreen({ navigation }) {
               
             />
             <VictoryBar 
-              data={[{ x: 'progress', y: 25 }]} 
+              data={[{ x: 'progress', y: 10 }]} 
               labels={({ datum }) => `Wrong: ${datum.y}`}
               style={{
                 labels: { 
@@ -100,7 +122,7 @@ export default function HomeScreen({ navigation }) {
               }}
               />
             <VictoryBar 
-              data={[{ x: 'progress', y: 30 }]} 
+              data={[{ x: 'progress', y: 90 }]} 
               labels={({ datum }) => `Unfinished: ${datum.y}`}
               style={{
                 labels: { 
@@ -109,7 +131,7 @@ export default function HomeScreen({ navigation }) {
                 }
               }}
             />
-          </VictoryStack>            
+          </VictoryStack>             */}
           <View style={styles.buttonContainer}>
           <TouchableOpacity
             style = {styles.button}
@@ -206,7 +228,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap', 
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: -30
   },
 
   button: {

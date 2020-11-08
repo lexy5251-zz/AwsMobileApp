@@ -3,9 +3,8 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
-import PracticeScreen from './screens/PracticeScreen';
-import TestScreen from './screens/TestScreen';
-import ResultScreen from './screens/ResultScreen';
+import QuestionViewerOptionScreen from './screens/QuestionViewerOptionScreen';
+import QuestionViewerScreen from './screens/QuestionViewerScreen';
 import { Provider, useDispatch } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -42,9 +41,8 @@ const App = () => {
   return (<NavigationContainer>
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Practice" component={PracticeScreen} />
-      <Stack.Screen name="Test" component={TestScreen} />
-      <Stack.Screen name="Result" component={ResultScreen} />
+      <Stack.Screen name="QuestionViewerOption" component={QuestionViewerOptionScreen} />
+      <Stack.Screen name="QuestionViewer" component={QuestionViewerScreen} />
     </Stack.Navigator>
   </NavigationContainer>)
 }

@@ -76,6 +76,30 @@ export const questionsByIds = async (examVersion, ids) => {
     return questions;
 }
 
+export const questionCount = async (examVersion) => {
+    await loadQuestionDBIfNotExists(examVersion);
+    let dbFileName = questionBundle[examVersion].dbFileName;
+
+    console.log("querying question db....");
+    const db = SQLite.openDatabase(dbFileName + ".db");
+    return new Promise((res, rej) => {
+        db.transaction(tx => {
+            tx.executeSql(
+                `SELECT COUNT(*) FROM questions`,
+                [],
+                (_, { rows: { _array } }) => {
+                    _array.forEach((row) => {
+                        res(row['COUNT(*)']);    
+                    });
+                },
+                (_, err) => {
+                    rej(err);
+                },
+            );
+        });
+    });
+}
+
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

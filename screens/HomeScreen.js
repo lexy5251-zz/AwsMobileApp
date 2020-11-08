@@ -62,9 +62,14 @@ export default function HomeScreen({ navigation }) {
     return data;
   }
 
+  const enterQuestionViewerOptionScreen = (examVersion) => {
+    navigation.navigate('QuestionViewerOption', {examVersion});
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
+      <TouchableOpacity onPress={()=>{enterQuestionViewerOptionScreen('c01')}}>
       <Card containerStyle={{
         shadowColor: '#C2C0C0',
         shadowOpacity: 0.2,
@@ -79,42 +84,11 @@ export default function HomeScreen({ navigation }) {
         <View style={{ height: 50, width: '100%' }}>
           <ProgressBar data={progressToBarData(progress)} />
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => onNewPracticePressed(navigation, dispatch)}
-          >
-            <Text style={styles.text}>Practice</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => onNewTestPressed(navigation, dispatch)}
-          >
-            <Text style={styles.text}>Test</Text>
-          </TouchableOpacity>
-        </View>
       </Card>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const onNewPracticePressed = (navigation, dispatch) => {
-  navigation.navigate('Practice');
-}
-
-const onResumePracticePressed = (navigation, dispatch) => {
-  navigation.navigate('Practice');
-}
-
-const onNewTestPressed = (navigation, dispatch) => {
-  dispatch(startCurrentTest(createQuestions()));
-  navigation.navigate('Test');
-}
-
-const onResumeTestPressed = (navigation, dispatch) => {
-  navigation.navigate('Test');
-}
-
 
 const styles = StyleSheet.create({
   container: {

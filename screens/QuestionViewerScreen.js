@@ -7,9 +7,10 @@ import {getData, storeData} from '../data'
 import _ from 'lodash'
 
 
-export default function PracticeScreen({ questionIdIterator, examVersion }) {
+export default function QuestionViewerScreen({ route }) {
+  const {examVersion, questionIdIterator} = route.params;
   // TEST
-  questionIdIterator = {
+  /*questionIdIterator = {
     questionIdArray: [1, 5, 7, 9],
     i: 0,
     hasNext: function() {return this.i < this.questionIdArray.length},
@@ -17,12 +18,12 @@ export default function PracticeScreen({ questionIdIterator, examVersion }) {
     next: function() {return this.questionIdArray[this.i++]},
     previous: function() {return this.questionIdArray[this.i--]},
   }
-  examVersion = 'c01';
+  examVersion = 'c01';*/
   // FINISH TEST
 
   let choices = [];
   const [question, setQuestion] = useState();
-  useEffect(() => {
+  useEffect(() => { 
     loadNextQuestion();
     return () => {};
   }, []);
@@ -46,8 +47,6 @@ export default function PracticeScreen({ questionIdIterator, examVersion }) {
   }
 
   const saveProgress = (id, choices, correctAnswers) => {
-    console.log('save progress for id', id);
-
     if(_.isEmpty(choices)) {
       return;
     }

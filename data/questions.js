@@ -114,8 +114,8 @@ export const questionById = (examVersion, id) => {
             const db = SQLite.openDatabase(dbFileName + ".db");
             db.transaction(tx => {
                 tx.executeSql(
-                    `SELECT data FROM questions ORDER BY RANDOM() LIMIT 1;`,
-                    [],
+                    `SELECT data FROM questions WHERE id=?;`,
+                    [id],
                     (_, { rows: { _array } }) => {
                         _array.forEach((row) => {
                             q = rowToQuestion(row.data.replace(/\\/g, ''));

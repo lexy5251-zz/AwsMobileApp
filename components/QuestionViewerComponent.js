@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useState, useEffect} from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import {questionById} from '../data/questions'
@@ -7,8 +7,7 @@ import {getData, storeData} from '../data'
 import _ from 'lodash'
 
 
-export default function QuestionViewerScreen({ route }) {
-  const {examVersion, questionIdIterator} = route.params;
+export default function QuestionViewerComponent({ examVersion, questionIdIterator, showAnswerOnNext, alwaysShowAnswer }) {
   // TEST
   /*questionIdIterator = {
     questionIdArray: [1, 5, 7, 9],
@@ -83,7 +82,8 @@ export default function QuestionViewerScreen({ route }) {
     <View style={styles.view}>
       {(question && true) && <QuestionComponent
         question={question}
-        showAnswerOnNext={true}
+        showAnswerOnNext={showAnswerOnNext}
+        alwaysShowAnswer={alwaysShowAnswer}
         onChoicesChange={(cc) => {
           choices = cc;
         }}

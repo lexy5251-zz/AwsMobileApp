@@ -18,6 +18,8 @@ export default function StudyScreen({ route }) {
     learned: [],
   });
   const [filter, setFilter] = useState('all');
+  const [viewmode, setViewMode] = useState('challenge');
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -34,8 +36,8 @@ export default function StudyScreen({ route }) {
     for (let i = 1; i <= qc; i++) {
       all.push(`${i}`);
     }
-    let mistakes = Object.keys(progress).filter((k) => progress[k] === "wrong");
-    let learned = Object.keys(progress).filter(
+    let mistakes = _.isEmpty(progress) ? [] : Object.keys(progress).filter((k) => progress[k] === "wrong");
+    let learned = _.isEmpty(progress) ? [] :  Object.keys(progress).filter(
       (k) => progress[k] === "correct"
     );
     let unfinished = _.difference(all, mistakes);
@@ -68,7 +70,7 @@ export default function StudyScreen({ route }) {
 
   return (
     <View style={styles.view}>
-      {(questionIdIterator(filter) && true) && <QuestionViewerComponent questionIdIterator={questionIdIterator(filter)} examVersion={examVersion} />}
+      {(questionIdIterator(filter) && true) && <QuestionViewerComponent questionIdIterator={questionIdIterator(filter)} examVersion={examVersion} showAnswerOnNext={viewmode==='challenge'} alwaysShowAnswer={viewmode==='browse'}/>}
     </View>
   );
 }

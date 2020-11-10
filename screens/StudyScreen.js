@@ -20,7 +20,6 @@ export default function StudyScreen({ route }) {
   const [filter, setFilter] = useState('all');
   const [viewmode, setViewMode] = useState('challenge');
 
-
   useFocusEffect(
     React.useCallback(() => {
       fetchQuestionIds(examVersion).then((v) => setIdMap(v));

@@ -11,6 +11,7 @@ import { AppState } from "react-native";
 import {saveCurrentTest, saveCurrentPractice, restoreCurrentPractice, restoreCurrentTest} from './actions'
 import StudyScreen from './screens/StudyScreen';
 import TestScreen from './screens/TestScreen';
+import TestMenuScreen from './screens/TestMenuScreen';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const App = () => {
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Study" component={StudyScreen} />
+      <Stack.Screen name="TestMenu" component={TestMenuScreen} />
       <Stack.Screen name="Test" component={TestScreen} />
     </Stack.Navigator>
   </NavigationContainer>)

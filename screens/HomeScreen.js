@@ -59,7 +59,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   const onTestPressed = (examVersion) => {
-    navigation.navigate("Test", { examVersion });
+    navigation.navigate("TestMenu", { examVersion });
   };
 
   return (

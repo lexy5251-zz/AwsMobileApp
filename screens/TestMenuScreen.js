@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { getData } from "../data";
 import _ from "lodash";
 
 export default function TestMenuScreen({ route, navigation }) {
@@ -10,7 +11,7 @@ export default function TestMenuScreen({ route, navigation }) {
   };
 
   const onResumePressed = () => {
-    navigation.navigate("Test", { examVersion, resumingSession: {} });
+    getData('test_session').then(ss => navigation.navigate("Test", { examVersion, resumingSession: ss }));
   };
 
   const onHistoryPressed = () => {

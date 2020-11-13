@@ -1,25 +1,91 @@
-import { connect } from 'react-redux';
-import { setCurrentTestQuestionIndex, setUserChoiceForCurrentTest, endCurrentTest } from '../actions';
-import SessionScreen from './SessionScreen';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { useState, useEffect } from "react";
+import { questionCount } from "../data/questions";
+import QuestionViewerComponent from "../components/QuestionViewerComponent";
+import _ from "lodash";
+import { storeData } from "../data";
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onQuestionChoiceChange: (index, text) => {
-      dispatch(setUserChoiceForCurrentTest(index, text));
-    },
-    onCurrentQuestionChange: (index) => {
-      dispatch(setCurrentTestQuestionIndex(index));
-    },
-    onSessionEnd: () => {
-      dispatch(endCurrentTest());
-    },
+export default function TestScreen({ route }) {
+  const { examVersion, resumingSession } = route.params;
+  const [session, setSession] = useState(resumingSession);
+
+  useEffect(() => {
+    if (!_.isEmpty(resumingSession)) {
+      console.log('>>>>>>>>>', resumingSession);
+      return;
+    }
+    createNewSession().then((s) => setSession(s));
+    return () => {};
+  }, []);
+
+  const createNewSession = async () => {
+    let qc = await questionCount(examVersion);
+    let all = [];
+    for (let i = 1; i <= qc; i++) {
+      all.push(`${i}`);
+    }
+    let shuffled = _.shuffle(all);
+    let session = { questionIds: [], choices: [], currentIndex: 0 };
+    for (let i = 0; i < 65; i++) {
+      session.questionIds.push(shuffled[i]);
+      session.choices.push([]);
+    }
+    await storeData("test_session", session);
+    console.log('>>>>>>new test session', session);
+    return session;
+  };
+
+  const questionIdIterator = () => {
+    if (_.isEmpty(session) || _.isEmpty(session.questionIds)) {
+      // TODO: add no question warning
+      return;
+    }
+    return {
+      questionIdArray: session.questionIds,
+      i: session.currentIndex - 1,
+      hasNext: function () {
+        return this.i + 1 < this.questionIdArray.length;
+      },
+      hasPrevious: function () {
+        return this.i - 1 >= 0;
+      },
+      next: function () {
+        return this.questionIdArray[++this.i];
+      },
+      previous: function () {
+        return this.questionIdArray[--this.i];
+      },
+    };
+  };
+
+  const handleChoicesChange = (index, choices) => {
+    session.choices[index] = choices;
+    storeData("test_session", session);
+  };
+
+  const handleQuestionChange = (index) => {
+    session.currentIndex = index;
+    storeData("test_session", session);
   }
+
+  return (
+    <View style={styles.view}>
+      {questionIdIterator() && true && (
+        <QuestionViewerComponent
+          onChoicesChange={handleChoicesChange}
+          onQuestionChange={handleQuestionChange}
+          questionIdIterator={questionIdIterator()}
+          examVersion={examVersion}
+          selectedChoicesForIndex={(index) => session.choices[index]}
+        />
+      )}
+    </View>
+  );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    session: state.currentTest,
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SessionScreen);
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+  },
+});

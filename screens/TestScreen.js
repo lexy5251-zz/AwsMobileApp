@@ -11,7 +11,8 @@ export default function TestScreen({ route }) {
   const [session, setSession] = useState(resumingSession);
 
   useEffect(() => {
-    if (!_.isEmpty(session)) {
+    if (!_.isEmpty(resumingSession)) {
+      console.log('>>>>>>>>>', resumingSession);
       return;
     }
     createNewSession().then((s) => setSession(s));
@@ -31,6 +32,7 @@ export default function TestScreen({ route }) {
       session.choices.push([]);
     }
     await storeData("test_session", session);
+    console.log('>>>>>>new test session', session);
     return session;
   };
 
@@ -41,12 +43,12 @@ export default function TestScreen({ route }) {
     }
     return {
       questionIdArray: session.questionIds,
-      i: session.currentIndex,
+      i: session.currentIndex - 1,
       hasNext: function () {
         return this.i + 1 < this.questionIdArray.length;
       },
       hasPrevious: function () {
-        return this.i - 1 > 0;
+        return this.i - 1 >= 0;
       },
       next: function () {
         return this.questionIdArray[++this.i];
@@ -62,13 +64,20 @@ export default function TestScreen({ route }) {
     storeData("test_session", session);
   };
 
+  const handleQuestionChange = (index) => {
+    session.currentIndex = index;
+    storeData("test_session", session);
+  }
+
   return (
     <View style={styles.view}>
       {questionIdIterator() && true && (
         <QuestionViewerComponent
           onChoicesChange={handleChoicesChange}
+          onQuestionChange={handleQuestionChange}
           questionIdIterator={questionIdIterator()}
           examVersion={examVersion}
+          selectedChoicesForIndex={(index) => session.choices[index]}
         />
       )}
     </View>

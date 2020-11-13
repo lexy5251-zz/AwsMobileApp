@@ -12,6 +12,8 @@ export default function QuestionViewerComponent({
   showAnswerOnQuestionChange,
   alwaysShowAnswer,
   onChoicesChange,
+  onQuestionChange,
+  selectedChoicesForIndex,
 }) {
   const [question, setQuestion] = useState();
   const [choices, setChoices] = useState([]);
@@ -29,18 +31,25 @@ export default function QuestionViewerComponent({
       currentChoices = _.concat(choices, [c]);
     }
     setChoices(currentChoices);
+    let currentQuestionIndex =  questionIdIterator.i;
     if (onChoicesChange) {
-      // i stands for the index of the next question, so use i -1 here.
-      onChoicesChange(questionIdIterator.i - 1, currentChoices);
+      onChoicesChange(currentQuestionIndex, currentChoices);
     }
   };
 
   const loadNextQuestion = () => {
     if (questionIdIterator.hasNext()) {
       let id = questionIdIterator.next();
+      if (onQuestionChange) {
+        onQuestionChange(questionIdIterator.i);
+      }
       questionById(examVersion, id).then((q) => {
         setQuestion(q);
-        setChoices([]);
+        let cc = [];
+        if (selectedChoicesForIndex && !_.isEmpty(selectedChoicesForIndex(questionIdIterator.i))) {
+          cc = selectedChoicesForIndex(questionIdIterator.i)
+        }
+        setChoices(cc);
       });
     }
   };
@@ -48,9 +57,16 @@ export default function QuestionViewerComponent({
   const loadPreviousQuestion = () => {
     if (questionIdIterator.hasPrevious()) {
       let id = questionIdIterator.previous();
+      if (onQuestionChange) {
+        onQuestionChange(questionIdIterator.i);
+      }
       questionById(examVersion, id).then((q) => {
         setQuestion(q);
-        setChoices([]);
+        let cc = [];
+        if (selectedChoicesForIndex && !_.isEmpty(selectedChoicesForIndex(questionIdIterator.i))) {
+          cc = selectedChoicesForIndex(questionIdIterator.i)
+        }
+        setChoices(cc);
       });
     }
   };

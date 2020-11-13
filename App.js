@@ -26,12 +26,10 @@ const App = () => {
   
   const handleChange = (newState) => {
     if (newState === "active") {
-      console.log('>>>>restoring sessions');
       dispatch(restoreCurrentTest());
       dispatch(restoreCurrentPractice());
       return;
     } else if (newState == 'background') {
-      console.log('>>>>saving sessions');
       dispatch(saveCurrentTest());
       dispatch(saveCurrentPractice());
       return;
@@ -41,7 +39,7 @@ const App = () => {
 
   return (<NavigationContainer>
     <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={HomeScreen} />
+      {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
       <Stack.Screen name="Practice" component={PracticeScreen} />
       <Stack.Screen name="Test" component={TestScreen} />
       <Stack.Screen name="Result" component={ResultScreen} />

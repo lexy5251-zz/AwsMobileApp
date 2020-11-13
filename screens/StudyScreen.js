@@ -1,12 +1,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { useState} from "react";
+import { useState } from "react";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
-import {getData} from '../data'
+import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
-import _ from 'lodash'
-
+import _ from "lodash";
 
 export default function StudyScreen({ route }) {
   const { examVersion } = route.params;
@@ -17,8 +16,8 @@ export default function StudyScreen({ route }) {
     unfinished: [],
     learned: [],
   });
-  const [filter, setFilter] = useState('all');
-  const [viewmode, setViewMode] = useState('challenge');
+  const [filter, setFilter] = useState("all");
+  const [viewmode, setViewMode] = useState("browse");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -35,10 +34,12 @@ export default function StudyScreen({ route }) {
     for (let i = 1; i <= qc; i++) {
       all.push(`${i}`);
     }
-    let mistakes = _.isEmpty(progress) ? [] : Object.keys(progress).filter((k) => progress[k] === "wrong");
-    let learned = _.isEmpty(progress) ? [] :  Object.keys(progress).filter(
-      (k) => progress[k] === "correct"
-    );
+    let mistakes = _.isEmpty(progress)
+      ? []
+      : Object.keys(progress).filter((k) => progress[k] === "wrong");
+    let learned = _.isEmpty(progress)
+      ? []
+      : Object.keys(progress).filter((k) => progress[k] === "correct");
     let unfinished = _.difference(all, mistakes);
     unfinished = _.difference(unfinished, learned);
     return { all, saved, mistakes, unfinished, learned };
@@ -69,7 +70,14 @@ export default function StudyScreen({ route }) {
 
   return (
     <View style={styles.view}>
-      {(questionIdIterator(filter) && true) && <QuestionViewerComponent questionIdIterator={questionIdIterator(filter)} examVersion={examVersion} showAnswerOnNext={viewmode==='challenge'} alwaysShowAnswer={viewmode==='browse'}/>}
+      {questionIdIterator(filter) && true && (
+        <QuestionViewerComponent
+          questionIdIterator={questionIdIterator(filter)}
+          examVersion={examVersion}
+          showAnswerOnQuestionChange={viewmode === "challenge"}
+          alwaysShowAnswer={viewmode === "browse"}
+        />
+      )}
     </View>
   );
 }

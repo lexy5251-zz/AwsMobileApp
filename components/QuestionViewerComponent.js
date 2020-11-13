@@ -1,52 +1,83 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { useState, useEffect} from "react";
+import { View, StyleSheet, Button } from "react-native";
+import { useState, useEffect } from "react";
 import QuestionComponent from "../components/QuestionComponent";
-import {questionById} from '../data/questions'
-import {getData, storeData} from '../data'
-import _ from 'lodash'
+import { questionById } from "../data/questions";
+import { getData, storeData } from "../data";
+import _ from "lodash";
 
-
-export default function QuestionViewerComponent({ examVersion, questionIdIterator, showAnswerOnNext, alwaysShowAnswer }) {
-  // TEST
-  /*questionIdIterator = {
-    questionIdArray: [1, 5, 7, 9],
-    i: 0,
-    hasNext: function() {return this.i < this.questionIdArray.length},
-    hasPrevious: function() {return this.i > 0},
-    next: function() {return this.questionIdArray[this.i++]},
-    previous: function() {return this.questionIdArray[this.i--]},
-  }
-  examVersion = 'c01';*/
-  // FINISH TEST
-
-  let choices = [];
+export default function QuestionViewerComponent({
+  examVersion,
+  questionIdIterator,
+  showAnswerOnQuestionChange,
+  alwaysShowAnswer,
+  onChoicesChange,
+}) {
   const [question, setQuestion] = useState();
-  useEffect(() => { 
+  const [choices, setChoices] = useState([]);
+  const [showAnswer, setShowAnswer] = useState(alwaysShowAnswer);
+  useEffect(() => {
     loadNextQuestion();
     return () => {};
   }, []);
 
+  const onChoiceClicked = (c) => {
+    let currentChoices;
+    if (choices.includes(c)) {
+      currentChoices = choices.filter((i) => i !== c);
+    } else {
+      currentChoices = _.concat(choices, [c]);
+    }
+    setChoices(currentChoices);
+    if (onChoicesChange) {
+      // i stands for the index of the next question, so use i -1 here.
+      onChoicesChange(questionIdIterator.i - 1, currentChoices);
+    }
+  };
 
   const loadNextQuestion = () => {
     if (questionIdIterator.hasNext()) {
       let id = questionIdIterator.next();
-      questionById(examVersion, id).then(q => {
+      questionById(examVersion, id).then((q) => {
         setQuestion(q);
+        setChoices([]);
       });
     }
-  }
+  };
+
   const loadPreviousQuestion = () => {
     if (questionIdIterator.hasPrevious()) {
       let id = questionIdIterator.previous();
-      questionById(examVersion, id).then(q => {
+      questionById(examVersion, id).then((q) => {
         setQuestion(q);
+        setChoices([]);
       });
     }
-  }
+  };
 
-  const saveProgress = (id, choices, correctAnswers) => {
-    if(_.isEmpty(choices)) {
+  const onQuestionChangeButtonClick = (direction) => {
+    if (!alwaysShowAnswer) {
+      if (!(showAnswerOnQuestionChange && showAnswer)) {
+        saveProgress(question.id, choices, question.answers);
+      }
+
+      if (showAnswerOnQuestionChange && !showAnswer) {
+        setShowAnswer(true);
+        return;
+      }
+    }
+
+    if (direction === -1 && questionIdIterator.hasPrevious()) {
+      loadPreviousQuestion();
+      return;
+    }
+    if (direction === 1 && questionIdIterator.hasNext()) {
+      loadNextQuestion();
+    }
+  };
+
+  const saveProgress = (id, choices, answers) => {
+    if (_.isEmpty(choices)) {
       return;
     }
     let key = `@${examVersion}_progress`;
@@ -54,42 +85,30 @@ export default function QuestionViewerComponent({ examVersion, questionIdIterato
       if (!progress) {
         progress = {};
       }
-      let result = 'wrong';
-      if (_.isEqual(choices, correctAnswers)) {
-        result = 'correct';
+      let result = "wrong";
+      if (_.isEqual(choices, answers)) {
+        result = "correct";
       }
       progress[id] = result;
-      console.log('save progress', progress);
+      console.log("save progress", progress);
       return storeData(key, progress);
     });
-  }
-
-  const handleNextPage = async () => {
-    saveProgress(question.id, choices, question.correctAnswers);
-    if(questionIdIterator.hasNext()) {
-      loadNextQuestion();
-    }
-  }
-
-  const handlePrevPage = async () => {
-    saveProgress(question.id, choices, question.correctAnswers);
-    if(questionIdIterator.hasPrevious()) {
-      loadPreviousQuestion();
-    }
-  }
+  };
 
   return (
     <View style={styles.view}>
-      {(question && true) && <QuestionComponent
-        question={question}
-        showAnswerOnNext={showAnswerOnNext}
-        alwaysShowAnswer={alwaysShowAnswer}
-        onChoicesChange={(cc) => {
-          choices = cc;
-        }}
-        onNextPage={handleNextPage}
-        onPrevPage={handlePrevPage}
-      ></QuestionComponent>}
+      {question && true && (
+        <QuestionComponent
+          question={question}
+          selectedChoices={choices}
+          showAnswer={showAnswer}
+          onChoiceClicked={onChoiceClicked}
+        ></QuestionComponent>
+      )}
+      <View style={styles.fixToText}>
+        <Button title="Prev" onPress={() => onQuestionChangeButtonClick(-1)} />
+        <Button title="Next" onPress={() => onQuestionChangeButtonClick(1)} />
+      </View>
     </View>
   );
 }
@@ -97,5 +116,9 @@ export default function QuestionViewerComponent({ examVersion, questionIdIterato
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+  },
+  fixToText: {
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 });

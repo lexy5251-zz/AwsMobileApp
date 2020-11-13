@@ -1,18 +1,20 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { questionCount } from "../data/questions";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
-import _ from 'lodash'
+import _ from "lodash";
+import { storeData } from "../data";
 
 export default function TestScreen({ route }) {
-  const {examVersion, resumingSession} = route.params;
+  const { examVersion, resumingSession } = route.params;
   const [session, setSession] = useState(resumingSession);
-  useEffect(() => { 
+
+  useEffect(() => {
     if (!_.isEmpty(session)) {
       return;
     }
-    createNewSession().then(s => setSession(s));
+    createNewSession().then((s) => setSession(s));
     return () => {};
   }, []);
 
@@ -23,11 +25,12 @@ export default function TestScreen({ route }) {
       all.push(`${i}`);
     }
     let shuffled = _.shuffle(all);
-    let session = {questionIds: [], answers: [], currentIndex: 0};
-    for (let i=0;i<65;i++) {
+    let session = { questionIds: [], choices: [], currentIndex: 0 };
+    for (let i = 0; i < 65; i++) {
       session.questionIds.push(shuffled[i]);
-      session.answers.push('');
+      session.choices.push([]);
     }
+    await storeData("test_session", session);
     return session;
   };
 
@@ -54,9 +57,20 @@ export default function TestScreen({ route }) {
     };
   };
 
+  const handleChoicesChange = (index, choices) => {
+    session.choices[index] = choices;
+    storeData("test_session", session);
+  };
+
   return (
     <View style={styles.view}>
-      {(questionIdIterator() && true) && <QuestionViewerComponent questionIdIterator={questionIdIterator()} examVersion={examVersion} showAnswerOnNext={false} alwaysShowAnswer={false}/>}
+      {questionIdIterator() && true && (
+        <QuestionViewerComponent
+          onChoicesChange={handleChoicesChange}
+          questionIdIterator={questionIdIterator()}
+          examVersion={examVersion}
+        />
+      )}
     </View>
   );
 }

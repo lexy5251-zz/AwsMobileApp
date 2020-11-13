@@ -79,7 +79,6 @@ export default function PracticeScreen({ questionIdIterator, examVersion }) {
       loadPreviousQuestion();
     }
   }
-
   return (
     <View style={styles.view}>
       {(question && true) && <QuestionComponent

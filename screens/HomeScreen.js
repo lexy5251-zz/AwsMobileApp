@@ -5,7 +5,6 @@ import { createQuestions } from '../test/TestData';
 import _ from 'lodash'
 import { startCurrentPractice, startCurrentTest } from '../actions';
 import { Card } from 'react-native-elements';
-import { VictoryBar, VictoryStack, VictoryLabel, VictoryContainer } from "victory-native";
 import { getData } from '../data'
 import { useFocusEffect } from '@react-navigation/native';
 import ProgressBar from '../components/ProgressBar';

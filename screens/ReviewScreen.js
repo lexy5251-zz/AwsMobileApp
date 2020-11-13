@@ -7,7 +7,7 @@ import {getData, storeData} from '../data'
 import _ from 'lodash'
 
 
-export default function PracticeScreen({ questionIdIterator, examVersion }) {
+export default function ReviewScreen({ questionIdIterator, examVersion }) {
   // TEST
   questionIdIterator = {
     questionIdArray: [1, 5, 7, 9],
@@ -45,36 +45,13 @@ export default function PracticeScreen({ questionIdIterator, examVersion }) {
     }
   }
 
-  const saveProgress = (id, choices, correctAnswers) => {
-    console.log('save progress for id', id);
-
-    if(_.isEmpty(choices)) {
-      return;
-    }
-    let key = `@${examVersion}_progress`;
-    getData(key).then((progress) => {
-      if (!progress) {
-        progress = {};
-      }
-      let result = 'wrong';
-      if (_.isEqual(choices, correctAnswers)) {
-        result = 'correct';
-      }
-      progress[id] = result;
-      console.log('save progress', progress);
-      return storeData(key, progress);
-    });
-  }
-
   const handleNextPage = async () => {
-    saveProgress(question.id, choices, question.correctAnswers);
     if(questionIdIterator.hasNext()) {
       loadNextQuestion();
     }
   }
 
   const handlePrevPage = async () => {
-    saveProgress(question.id, choices, question.correctAnswers);
     if(questionIdIterator.hasPrevious()) {
       loadPreviousQuestion();
     }
@@ -84,9 +61,8 @@ export default function PracticeScreen({ questionIdIterator, examVersion }) {
       {(question && true) && <QuestionComponent
         question={question}
         showAnswerOnNext={true}
-        onChoicesChange={(cc) => {
-          choices = cc;
-        }}
+        onChoicesChange={() => {}}
+        viewOnlyMode={true}
         onNextPage={handleNextPage}
         onPrevPage={handlePrevPage}
       ></QuestionComponent>}

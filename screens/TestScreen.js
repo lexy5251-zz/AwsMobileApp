@@ -12,7 +12,6 @@ export default function TestScreen({ route }) {
 
   useEffect(() => {
     if (!_.isEmpty(resumingSession)) {
-      console.log('>>>>>>>>>', resumingSession);
       return;
     }
     createNewSession().then((s) => setSession(s));
@@ -32,7 +31,7 @@ export default function TestScreen({ route }) {
       session.choices.push([]);
     }
     await storeData("test_session", session);
-    console.log('>>>>>>new test session', session);
+    session.startTimeMs = _.now();
     return session;
   };
 

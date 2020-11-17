@@ -9,6 +9,12 @@ const questionBundle = {
     srcURI: Asset.fromModule(require("../assets/data/saa_c01_questions.mp4"))
       .uri,
   },
+  c02: {
+    dbFileName: "saa_c02_questions0",
+    // react native doesn't recognize .db as assets, use .mp4 here.
+    srcURI: Asset.fromModule(require("../assets/data/saa_c02_questions.mp4"))
+      .uri,
+  },
 };
 
 export const loadQuestionDBIfNotExists = async (examVersion) => {
@@ -140,5 +146,6 @@ export const questionById = (examVersion, id) => {
 };
 
 export const rowToQuestion = (json) => {
+    console.log('>>>>>>>>>>>>', json);
   return JSON.parse(json);
 };

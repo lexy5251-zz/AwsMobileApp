@@ -7,11 +7,14 @@ import { useFocusEffect } from "@react-navigation/native";
 import ProgressBar from "../components/ProgressBar";
 
 export default function HomeScreen({ navigation }) {
-  const [progress, setProgress] = useState({});
+  const [c01Progress, setC01Progress] = useState({});
+  const [c02Progress, setC02Progress] = useState({});
+
 
   useFocusEffect(
     React.useCallback(() => {
-      getProgress("c01").then((p) => setProgress(p));
+      getProgress("c01").then((p) => setC01Progress(p));
+      getProgress("c02").then((p) => setC02Progress(p));
       return () => {};
     }, [])
   );
@@ -69,11 +72,11 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.cardTitle}>
           <Text style={styles.textFont}>Sample</Text>
           <Text style={styles.total}>
-            Total {progress ? progress.total : 0} Questions
+            Total {c01Progress ? c01Progress.total : 0} Questions
           </Text>
         </View>
         <View style={styles.barStyle}>
-          <ProgressBar data={progressToBarData(progress)} />
+          <ProgressBar data={progressToBarData(c01Progress)} />
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -88,6 +91,44 @@ export default function HomeScreen({ navigation }) {
             style={styles.button}
             onPress={() => {
               onTestPressed("c01");
+            }}
+          >
+            <Text style={styles.text}>Test</Text>
+          </TouchableOpacity>
+        </View>
+      </Card>
+
+      <Card
+        containerStyle={{
+          shadowColor: "#C2C0C0",
+          shadowOpacity: 0.2,
+          border: "none",
+          backgroundColor: "#FAFAFB",
+          elevation: 5,
+        }}
+      >
+        <View style={styles.cardTitle}>
+          <Text style={styles.textFont}>c02</Text>
+          <Text style={styles.total}>
+            Total {c02Progress ? c02Progress.total : 0} Questions
+          </Text>
+        </View>
+        <View style={{ height: 50, width: "100%" }}>
+          <ProgressBar data={progressToBarData(c02Progress)} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              onStudyPressed("c02");
+            }}
+          >
+            <Text style={styles.text}>Study</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              onTestPressed("c02");
             }}
           >
             <Text style={styles.text}>Test</Text>

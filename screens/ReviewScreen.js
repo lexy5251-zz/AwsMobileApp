@@ -56,7 +56,6 @@ export default function ReviewScreen({ questionIdIterator, examVersion }) {
       loadPreviousQuestion();
     }
   }
-
   return (
     <View style={styles.view}>
       {(question && true) && <QuestionComponent

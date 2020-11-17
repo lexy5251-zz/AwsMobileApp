@@ -68,22 +68,14 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
-      <Card
-        containerStyle={{
-          shadowColor: "#C2C0C0",
-          shadowOpacity: 0.2,
-          border: "none",
-          backgroundColor: "#FAFAFB",
-          elevation: 5,
-        }}
-      >
+      <Card style={styles.cardContainer}>
         <View style={styles.cardTitle}>
           <Text style={styles.textFont}>Sample</Text>
           <Text style={styles.total}>
             Total {c01Progress ? c01Progress.total : 0} Questions
           </Text>
         </View>
-        <View style={{ height: 50, width: "100%" }}>
+        <View style={styles.barStyle}>
           <ProgressBar data={progressToBarData(c01Progress)} />
         </View>
         <View style={styles.buttonContainer}>
@@ -93,7 +85,7 @@ export default function HomeScreen({ navigation }) {
               onStudyPressed("c01");
             }}
           >
-            <Text style={styles.text}>Study</Text>
+          <Text style={styles.text}>Study</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
@@ -154,6 +146,21 @@ const styles = StyleSheet.create({
     padding: "2%",
   },
 
+  cardContainer: {
+    shadowColor: "#C2C0C0",
+    shadowOpacity: 0.2,
+    backgroundColor: "#FAFAFB",
+    elevation: 5,
+  },
+
+  barStyle: {
+    height: 30, 
+    width: "100%", 
+    marginTop: "2%", 
+    marginBottom: "5%",
+    borderRadius: 5
+  },
+
   titleText: {
     paddingLeft: "5%",
     fontSize: 18,
@@ -170,7 +177,7 @@ const styles = StyleSheet.create({
     flexBasis: "45%",
     alignItems: "center",
     backgroundColor: "#F1BC5E",
-    borderRadius: 5,
+    borderRadius: 2,
     padding: 12,
     shadowOffset: { width: 5, height: 5 },
     shadowColor: "#C2C0C0",

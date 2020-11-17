@@ -49,7 +49,7 @@ export default class QuestionPager extends React.Component {
       >
          {questions.map((q, i) => {
             return (
-              <View key={i}>
+              <View key={i} style={styles.container}>
                <Text style={styles.pageNumber}>{this.state.currentPage+1}/20</Text>
                <QuestionComponent question={q} setChoice={(text) => {
                  onChoiceSelected(i, text);
@@ -68,6 +68,9 @@ export default class QuestionPager extends React.Component {
 
 const styles = StyleSheet.create({
   viewPager: {
+    flex: 1,
+  },
+  container: {
     flex: 1,
   },
   fixToText: {

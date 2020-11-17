@@ -25,12 +25,10 @@ const App = () => {
   
   const handleChange = (newState) => {
     if (newState === "active") {
-      console.log('>>>>restoring sessions');
       dispatch(restoreCurrentTest());
       dispatch(restoreCurrentPractice());
       return;
     } else if (newState == 'background') {
-      console.log('>>>>saving sessions');
       dispatch(saveCurrentTest());
       dispatch(saveCurrentPractice());
       return;

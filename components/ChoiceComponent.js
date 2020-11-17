@@ -1,26 +1,37 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 export default function ChoiceComponent({ onClick, text, checked, checkedColor, explanation, disabled }) {
-  let style={ flex: 1, alignItems: 'center', justifyContent: 'center' };
+  let style={ };
   if(explanation) {
     style.borderColor = 'green';
     style.borderWidth = 4;
   }
   let showExplanation = explanation != null && explanation != "";
   return (
-    <View style={style}>
+    <View>
       <CheckBox
         title={text}
-        checkedColor={checkedColor}
         onPress={() => onClick(text)}
         checked={checked}
         disabled={disabled}
+        size={18}
+        uncheckedColor='#4DC1E9'
+        uncheckedIcon='circle-o'
+        checkedIcon='dot-circle-o'
+        checkedColor={checkedColor}
       />
-      {showExplanation && 
-      (<Text>{explanation}</Text>)
-        }
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  explanationStyle: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
+    lineHeight: 20,
+  },
+  
+});

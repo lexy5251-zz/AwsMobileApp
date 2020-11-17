@@ -10,7 +10,7 @@ export default function ChoiceComponent({ onClick, text, checked, checkedColor, 
   }
   let showExplanation = explanation != null && explanation != "";
   return (
-    <View style={style} style={styles.singleChoice}>
+    <View>
       <CheckBox
         title={text}
         onPress={() => onClick(text)}
@@ -22,9 +22,6 @@ export default function ChoiceComponent({ onClick, text, checked, checkedColor, 
         checkedIcon='dot-circle-o'
         checkedColor={checkedColor}
       />
-      {/* {showExplanation && 
-      (<Text style={styles.explanationStyle}>{explanation}</Text>)
-        } */}
     </View>
   );
 }

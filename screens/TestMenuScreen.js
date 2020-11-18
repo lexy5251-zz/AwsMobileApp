@@ -49,20 +49,23 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: "column",
+    marginTop: '40%',
+    alignItems: 'center'
+
   },
 
   button: {
-    flexBasis: "45%",
     alignItems: "center",
     backgroundColor: "#F1BC5E",
     borderRadius: 5,
-    padding: 12,
+    padding: 15,
+    margin: 10,
+    width: '55%',
     shadowOffset: { width: 5, height: 5 },
     shadowColor: "#C2C0C0",
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     elevation: 5,
   },
   text: {

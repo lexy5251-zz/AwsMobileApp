@@ -5,24 +5,25 @@ import { Card } from "react-native-elements";
 import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import ProgressBar from "../components/ProgressBar";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Button } from 'react-native-elements';
 
 export default function HomeScreen({ navigation }) {
   const [c01Progress, setC01Progress] = useState({});
   const [c02Progress, setC02Progress] = useState({});
-
-
+  
   useFocusEffect(
     React.useCallback(() => {
-      getProgress("c01").then((p) => setC01Progress(p));
-      getProgress("c02").then((p) => setC02Progress(p));
+      getProgress("c01", 1185).then((p) => setC01Progress(p));
+      getProgress("c02", 466).then((p) => setC02Progress(p));
       return () => {};
     }, [])
   );
 
-  const getProgress = (examVersion) => {
+  const getProgress = (examVersion, total) => {
     let key = `@${examVersion}_progress`;
     return getData(key).then((v) => {
-      let progress = { total: 1185, learned: 0, mistakes: 0 };
+      let progress = { total: total, learned: 0, mistakes: 0 };
       if (!v) {
         return progress;
       }
@@ -68,7 +69,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
-      <Card style={styles.cardContainer}>
+      <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardTitle}>
           <Text style={styles.textFont}>Sample</Text>
           <Text style={styles.total}>
@@ -76,7 +77,11 @@ export default function HomeScreen({ navigation }) {
           </Text>
         </View>
         <View style={styles.barStyle}>
-          <ProgressBar data={progressToBarData(c01Progress)} />
+          <ProgressBar data={progressToBarData(c01Progress)} /> 
+          <View style={styles.barText}>
+            <Text style={{marginRight: 10}}>Learned: {c01Progress.learned}</Text>
+            <Text>Mistakes: {c01Progress.mistakes}</Text>
+          </View>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -97,23 +102,55 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </Card>
-
-      <Card
-        containerStyle={{
-          shadowColor: "#C2C0C0",
-          shadowOpacity: 0.2,
-          border: "none",
-          backgroundColor: "#FAFAFB",
-          elevation: 5,
-        }}
-      >
-        <View style={styles.cardTitle}>
-          <Text style={styles.textFont}>c02</Text>
+      <Card containerStyle={styles.cardContainer}>
+      <Button 
+          buttonStyle={{
+            paddingBottom: 20,
+            backgroundColor: 'transparent'
+          }}
+          icon={
+            <Icon
+              name="lock"
+              size={16}
+              color="#6C6C6C"
+            />
+          }
+          onPress={() => onLockerClick} />
+      <View style={styles.cardTitle}>
+          <Text style={styles.textFont}>SAA-CA01</Text>
           <Text style={styles.total}>
             Total {c02Progress ? c02Progress.total : 0} Questions
           </Text>
         </View>
-        <View style={{ height: 50, width: "100%" }}>
+        <View style={styles.barStyle}>
+          <ProgressBar data={progressToBarData(c02Progress)} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              onStudyPressed("c02");
+            }}
+          >
+            <Text style={styles.text}>Study</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              onTestPressed("c02");
+            }}
+          >
+            <Text style={styles.text}>Test</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.horizontalLine}/>
+        <View style={styles.cardTitle}>
+          <Text style={styles.textFont}>SAA-CA02</Text>
+          <Text style={styles.total}>
+            Total {c02Progress ? c02Progress.total : 0} Questions
+          </Text>
+        </View>
+        <View style={styles.barStyle}>
           <ProgressBar data={progressToBarData(c02Progress)} />
         </View>
         <View style={styles.buttonContainer}>
@@ -142,15 +179,18 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: "4%",
     padding: "2%",
+    backgroundColor: '#ffffff'
   },
 
   cardContainer: {
-    shadowColor: "#C2C0C0",
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 5, height: 5 },
+    shadowColor: '#C2C0C0',
+    shadowOpacity: 0.3,
     backgroundColor: "#FAFAFB",
-    elevation: 5,
+    elevation: 3,
+    borderRadius: 10,
+    borderColor: "#FAFAFB",
   },
 
   barStyle: {
@@ -164,6 +204,7 @@ const styles = StyleSheet.create({
   titleText: {
     paddingLeft: "5%",
     fontSize: 18,
+    marginTop: '5%',
     fontFamily: "Avenir-Book",
   },
 
@@ -171,6 +212,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 20
   },
 
   button: {
@@ -186,6 +228,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#fff",
+    fontSize: 15
   },
   cardTitle: {
     display: "flex",
@@ -195,7 +238,7 @@ const styles = StyleSheet.create({
   },
 
   textFont: {
-    fontFamily: "Avenir-Black",
+    fontFamily: "Avenir-Medium",
     fontSize: 16,
   },
   total: {
@@ -203,4 +246,16 @@ const styles = StyleSheet.create({
     color: "#4A4949",
     fontSize: 12,
   },
+
+  horizontalLine: {
+    borderBottomColor: '#CECECE',
+    borderBottomWidth: 1,
+    marginTop: '5%',
+    marginBottom: '5%'
+  },
+  barText: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 10,
+  }
 });

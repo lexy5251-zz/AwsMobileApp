@@ -34,7 +34,7 @@ export default function TestScreen({ route }) {
       session.choices.push([]);
     }
     session.currentQuestionStartTimeMs = _.now();
-    await storeData("test_session", session);
+    await storeData(`test_session_${examVersion}`, session);
     return session;
   };
 
@@ -69,26 +69,26 @@ export default function TestScreen({ route }) {
     } else if (!isCorrect && _.includes(id)) {
       session.correctQuestionIds = session.correctQuestionIds.filter((v) => v !== id);
     }
-    storeData("test_session", session);
+    storeData(`test_session_${examVersion}`, session);
   };
 
   const handleQuestionChange = (index) => {
     session.durationMs = session.durationMs + _.now() - session.currentQuestionStartTimeMs;
     session.currentIndex = index;
     session.currentQuestionStartTimeMs = _.now();
-    storeData("test_session", session);
+    storeData(`test_session_${examVersion}`, session);
   }
 
   const finishTest = () => {
     session.endTimeMs = _.now();
-    getData("test_history").then(h => {
+    getData(`test_history_${examVersion}`).then(h => {
       if (!h) {
         h = [];
       }
       h.push(session);
-      return storeData("test_history", h);
+      return storeData(`test_history_${examVersion}`, h);
     }).then(() => {
-      return storeData("test_session", null);
+      return storeData(`test_session_${examVersion}`, null);
     }).then(() => {
       showTestResult();
     })

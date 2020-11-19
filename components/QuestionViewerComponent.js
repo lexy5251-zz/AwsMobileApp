@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
@@ -23,7 +23,7 @@ export default function QuestionViewerComponent({
   const [showAnswer, setShowAnswer] = useState(alwaysShowAnswer);
   useEffect(() => {
     loadNextQuestion();
-    return () => {};
+    return () => { };
   }, []);
 
   const onChoiceClicked = (c) => {
@@ -134,7 +134,7 @@ export default function QuestionViewerComponent({
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
     >
-      <View style={styles.view}>
+      <View style={styles.container}>
         {question && true && (
           <QuestionComponent
             question={question}
@@ -147,32 +147,43 @@ export default function QuestionViewerComponent({
           <Button
             titleStyle={{
               fontSize: 16,
-              paddingLeft: 10,
+              paddingLeft: 10
             }}
             buttonStyle={{
               paddingLeft: 15,
               paddingRight: 15,
-              backgroundColor: "#4FC1E9",
+              backgroundColor: '#4FC1E9'
             }}
-            icon={<Icon name="arrow-left" size={15} color="white" />}
+            icon={
+              <Icon
+                name="arrow-left"
+                size={15}
+                color="white"
+              />
+            }
+
             title="Prev"
-            onPress={() => onQuestionChangeButtonClick(-1)}
-          />
+            onPress={() => onQuestionChangeButtonClick(-1)} />
           <Button
             buttonStyle={{
               paddingLeft: 15,
               paddingRight: 15,
-              backgroundColor: "#4FC1E9",
+              backgroundColor: '#4FC1E9'
             }}
             titleStyle={{
               fontSize: 16,
-              paddingRight: 10,
+              paddingRight: 10
             }}
-            iconRight="true"
-            icon={<Icon name="arrow-right" size={15} color="white" />}
+            iconRight='true'
+            icon={
+              <Icon
+                name="arrow-right"
+                size={15}
+                color="white"
+              />
+            }
             title="Next"
-            onPress={() => onQuestionChangeButtonClick(1)}
-          />
+            onPress={() => onQuestionChangeButtonClick(1)} />
         </View>
       </View>
     </ScrollView>
@@ -180,7 +191,7 @@ export default function QuestionViewerComponent({
 }
 
 const styles = StyleSheet.create({
-  view: {
+  container: {
     flex: 1,
     marginHorizontal: 20,
     marginTop: 10,

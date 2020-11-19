@@ -117,7 +117,7 @@ export default function QuestionViewerComponent({
   };
 
   return (
-    <View style={styles.view}>
+    <View style={styles.container}>
       {question && true && (
         <QuestionComponent
           question={question}
@@ -173,7 +173,7 @@ export default function QuestionViewerComponent({
 }
 
 const styles = StyleSheet.create({
-  view: {
+  container: {
     flex: 1,
     marginHorizontal: 20,
     marginTop: 10,

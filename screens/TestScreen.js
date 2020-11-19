@@ -4,11 +4,14 @@ import { useState, useEffect } from "react";
 import { questionCount } from "../data/questions";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import _ from "lodash";
-import { storeData } from "../data";
+import { getData, storeData } from "../data";
+import Dialog from "react-native-dialog";
+
 
 export default function TestScreen({ route }) {
   const { examVersion, resumingSession } = route.params;
   const [session, setSession] = useState(resumingSession);
+  const [finishDialogVisible, setFinishDialogVisible] = useState(false);
 
   useEffect(() => {
     if (!_.isEmpty(resumingSession)) {
@@ -25,13 +28,13 @@ export default function TestScreen({ route }) {
       all.push(`${i}`);
     }
     let shuffled = _.shuffle(all);
-    let session = { questionIds: [], choices: [], currentIndex: 0 };
-    for (let i = 0; i < 65; i++) {
+    let session = { examVersion, questionIds: [], choices: [], currentIndex: 0, correctQuestionIds:[], durationMs: 0};
+    for (let i = 0; i < 2; i++) {
       session.questionIds.push(shuffled[i]);
       session.choices.push([]);
     }
+    session.currentQuestionStartTimeMs = _.now();
     await storeData("test_session", session);
-    session.startTimeMs = _.now();
     return session;
   };
 
@@ -58,22 +61,61 @@ export default function TestScreen({ route }) {
     };
   };
 
-  const handleChoicesChange = (index, choices) => {
+  const handleChoicesChange = (index, choices, isCorrect) => {
     session.choices[index] = choices;
+    let id = session.questionIds[index];
+    if (isCorrect && !_.includes(id)) {
+      session.correctQuestionIds.push(id);
+    } else if (!isCorrect && _.includes(id)) {
+      session.correctQuestionIds = session.correctQuestionIds.filter((v) => v !== id);
+    }
     storeData("test_session", session);
   };
 
   const handleQuestionChange = (index) => {
+    session.durationMs = session.durationMs + _.now() - session.currentQuestionStartTimeMs;
     session.currentIndex = index;
+    session.currentQuestionStartTimeMs = _.now();
     storeData("test_session", session);
   }
 
+  const finishTest = () => {
+    session.endTimeMs = _.now();
+    getData("test_history").then(h => {
+      if (!h) {
+        h = [];
+      }
+      h.push(session);
+      return storeData("test_history", h);
+    }).then(() => {
+      return storeData("test_session", null);
+    }).then(() => {
+      showTestResult();
+    })
+  };
+
+  const showTestResult = () => {
+    console.log('show test result!!')
+  };
+
   return (
     <View style={styles.view}>
+      <Dialog.Container visible={finishDialogVisible}>
+        <Dialog.Title>Finish test</Dialog.Title>
+        <Dialog.Description>
+          This is the last question, finish test?
+        </Dialog.Description>
+        <Dialog.Button label="No" onPress={() => setFinishDialogVisible(false)} />
+        <Dialog.Button label="Yes" onPress={() => {
+          setFinishDialogVisible(false);
+          finishTest();
+        }} />
+      </Dialog.Container>
       {questionIdIterator() && true && (
         <QuestionViewerComponent
           onChoicesChange={handleChoicesChange}
           onQuestionChange={handleQuestionChange}
+          onLastQuestionFinished={() => setFinishDialogVisible(true)}
           questionIdIterator={questionIdIterator()}
           examVersion={examVersion}
           selectedChoicesForIndex={(index) => session.choices[index]}

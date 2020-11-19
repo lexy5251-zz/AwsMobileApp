@@ -174,7 +174,7 @@ export default function QuestionViewerComponent({
               fontSize: 16,
               paddingRight: 10
             }}
-            iconRight='true'
+            iconRight={true}
             icon={
               <Icon
                 name="arrow-right"

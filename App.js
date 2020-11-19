@@ -12,6 +12,7 @@ import {saveCurrentTest, saveCurrentPractice, restoreCurrentPractice, restoreCur
 import StudyScreen from './screens/StudyScreen';
 import TestScreen from './screens/TestScreen';
 import TestMenuScreen from './screens/TestMenuScreen';
+import TestHistoryScreen from './screens/TestHistoryScreen';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const App = () => {
       <Stack.Screen name="Study" component={StudyScreen} />
       <Stack.Screen name="TestMenu" component={TestMenuScreen} />
       <Stack.Screen name="Test" component={TestScreen} />
+      <Stack.Screen name="TestHistory" component={TestHistoryScreen} />
     </Stack.Navigator>
   </NavigationContainer>)
 }

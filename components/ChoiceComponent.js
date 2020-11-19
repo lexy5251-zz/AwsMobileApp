@@ -2,13 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
-export default function ChoiceComponent({ onClick, text, checked, checkedColor, explanation, disabled }) {
-  let style={ };
-  if(explanation) {
-    style.borderColor = 'green';
-    style.borderWidth = 4;
-  }
-  let showExplanation = explanation != null && explanation != "";
+export default function ChoiceComponent({ onClick, text, checked, checkedColor, disabled }) {
   return (
     <View>
       <CheckBox

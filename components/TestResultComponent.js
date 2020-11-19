@@ -1,8 +1,11 @@
 import React from 'react';
 import { Card } from "react-native-elements";
 import ProgressBar from "../components/ProgressBar";
-import { View, TouchableOpacity, Text, StyleSheet, StatusBar, FlatList } from "react-native";
+import { View, Text, StyleSheet, StatusBar, FlatList } from "react-native";
 import _ from 'lodash';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+import humanizeDuration from 'humanize-duration';
 
 const testResult = (test) => {
     if (!test) return;
@@ -32,6 +35,7 @@ const testResultToBarData = (test) => {
 };
 
 const Item = ({ test }) => {
+    const timeAgo = new TimeAgo('en-US');
     return (
         <Card containerStyle={styles.cardContainer}>
             <View style={styles.cardTitle}>
@@ -45,15 +49,9 @@ const Item = ({ test }) => {
                     <Text>Wrong: {test.questionIds.length - test.correctQuestionIds.length}</Text>
                 </View>
             </View>
-            <View style={styles.timeAndReviewContainer}>
-                <Text>{test.startTimeMs}</Text>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        onTestReviewPressed();
-                    }}>
-                    <Text style={styles.text}>Review</Text>
-                </TouchableOpacity>
+            <View style={styles.timeContainer}>
+                <Text style={styles.timeAgoStyle}>{timeAgo.format(test.endTimeMs)}</Text>
+                <Text>Duration:{humanizeDuration(test.durationMs, {round: true})}</Text>
             </View>
         </Card>
     )
@@ -61,7 +59,7 @@ const Item = ({ test }) => {
 }
 
 export default function TestResultComponent({ testList }) {
-    console.log("test list: ", testList);
+    TimeAgo.addLocale(en);
 
     const renderItem = ({ item }) => (
         <Item test={item} />
@@ -113,11 +111,12 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
 
-    timeAndReviewContainer: {
+    timeContainer: {
         marginTop: 20,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        fontFamily: "Avenir-Book",
         alignItems: 'flex-end'
     },
 
@@ -142,4 +141,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 10,
     },
+
+    timeAgoStyle: {
+        fontSize: 12
+    }
 });

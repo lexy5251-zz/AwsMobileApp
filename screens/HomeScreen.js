@@ -27,8 +27,8 @@ export default function HomeScreen({ navigation }) {
       if (!v) {
         return progress;
       }
-      let wrongNum = Object.values(v).filter((i) => i === "wrong").length;
-      let correctNum = Object.values(v).filter((i) => i === "correct").length;
+      let wrongNum = Object.values(v).filter((i) => i.status === "wrong").length;
+      let correctNum = Object.values(v).filter((i) => i.status === "correct").length;
       progress.learned = correctNum;
       progress.mistakes = wrongNum;
       return progress;
@@ -42,15 +42,15 @@ export default function HomeScreen({ navigation }) {
     }
     let v1 = (progress.learned / progress.total) * 100;
     if (v1) {
-      if (v1 < 5) {
-        v1 = 5;
+      if (v1 < 1) {
+        v1 = 1;
       }
       data.push({ value: v1, color: "#49CFAE" });
     }
     let v2 = (progress.mistakes / progress.total) * 100;
     if (v2) {
-      if (v2 < 5) {
-        v2 = 5;
+      if (v2 < 1) {
+        v2 = 1;
       }
       data.push({ value: v2, color: "#EC5563" });
     }

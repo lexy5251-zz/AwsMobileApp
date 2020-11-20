@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
-import { getData, storeData } from "../data";
+import { getData, storeData, setQuestionStatus } from "../data";
 import _ from "lodash";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -17,6 +17,7 @@ export default function QuestionViewerComponent({
   onQuestionChange,
   onLastQuestionFinished,
   selectedChoicesForIndex,
+  showQuestionLabels,
 }) {
   const [question, setQuestion] = useState();
   const [choices, setChoices] = useState([]);
@@ -114,19 +115,11 @@ export default function QuestionViewerComponent({
     if (_.isEmpty(choices)) {
       return;
     }
-    let key = `@${examVersion}_progress`;
-    getData(key).then((progress) => {
-      if (!progress) {
-        progress = {};
-      }
-      let result = "wrong";
+    let status = "wrong";
       if (_.isEqual(choices, answers)) {
-        result = "correct";
-      }
-      progress[id] = result;
-      console.log("save progress", progress);
-      return storeData(key, progress);
-    });
+        status = "correct";
+    }
+    setQuestionStatus(id, examVersion, {status});
   };
 
   return (
@@ -141,6 +134,7 @@ export default function QuestionViewerComponent({
             selectedChoices={choices}
             showAnswer={showAnswer}
             onChoiceClicked={onChoiceClicked}
+            showQuestionLabels={showQuestionLabels}
           ></QuestionComponent>
         )}
         <View style={styles.fixToText}>

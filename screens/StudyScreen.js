@@ -7,8 +7,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
 import _ from "lodash";
 import OptionsMenu from "../components/OptionMenuComponent";
+import Toast from "react-native-simple-toast";
 
 const filterIcon = require("../assets/filter.png");
+const viewIcon = require("../assets/viewmode.png");
+
 
 export default function StudyScreen({ navigation, route }) {
   const { examVersion } = route.params;
@@ -22,46 +25,62 @@ export default function StudyScreen({ navigation, route }) {
   const [filter, setFilter] = useState("All");
   const [viewmode, setViewMode] = useState("challenge");
 
-  const setHeaderRight = (currentFilter) => {
-    let filterOptions = ["All", "Mistakes", "Learned", "Unfinished", "Saved"];
+  const setHeaderRight = (currentFilter, currentMode) => {
+    let filterOptions = [
+      "All",
+      "Mistakes",
+      "Learned",
+      "Unfinished",
+      "Saved",
+      "Cancel",
+    ];
     filterOptions = filterOptions.map((s) => {
       if (s === currentFilter) {
         return `${s}   \u2713`;
       }
       return s;
-    })
-    let modeOptions = ['Challenge mode   \u2713', 'Browse mode'];
-    if (viewmode === 'browse') {
-      modeOptions =  ['Challenge mode', 'Browse mode    \u2713'];
+    });
+    let modeOptions = ["Challenge mode   \u2713", "Browse mode", "Cancel"];
+    if (currentMode === "browse") {
+      modeOptions = ["Challenge mode", "Browse mode    \u2713", "Cancel"];
     }
-   
+
     navigation.setOptions({
       headerRight: () => (
-        <View>
-        <OptionsMenu
-          button={filterIcon}
-          buttonStyle={{
-            width: 32,
-            height: 16,
-            resizeMode: "contain",
-          }}
-          options={filterOptions}
-          actions={[() => onFilterSelected('All'), () => onFilterSelected('Mistakes'), () => onFilterSelected('Learned'), () => onFilterSelected('Unfinished'), () => onFilterSelected('Saved')]}
-        />
-        <OptionsMenu
-          button={filterIcon}
-          buttonStyle={{
-            width: 32,
-            height: 16,
-            resizeMode: "contain",
-          }}
-          options={modeOptions}
-          actions={[() => setViewMode('challenge'), () => setViewMode('browse')]}
-        />
+        <View style={{flexDirection:'row'}}>
+          <OptionsMenu
+            button={filterIcon}
+            buttonStyle={{
+              width: 32,
+              height: 16,
+              resizeMode: "contain",
+            }}
+            options={filterOptions}
+            actions={[
+              () => onFilterSelected("All"),
+              () => onFilterSelected("Mistakes"),
+              () => onFilterSelected("Learned"),
+              () => onFilterSelected("Unfinished"),
+              () => onFilterSelected("Saved"),
+            ]}
+          />
+          <OptionsMenu
+            button={viewIcon}
+            buttonStyle={{
+              width: 32,
+              height: 16,
+              resizeMode: "contain",
+            }}
+            options={modeOptions}
+            actions={[
+              () => onModeSelected("challenge"),
+              () => onModeSelected("browse"),
+            ]}
+          />
         </View>
       ),
     });
-  }
+  };
   useLayoutEffect(() => {
     setHeaderRight(filter);
   }, [navigation]);
@@ -74,16 +93,20 @@ export default function StudyScreen({ navigation, route }) {
   );
 
   const onFilterSelected = (filter) => {
-    console.log('>>>>>on filter selected', filter);
     fetchQuestionIds(examVersion).then((v) => {
       if (_.isEmpty(v[filter])) {
+        Toast.show("No questions");
         return;
       }
       setIdMap(v);
-      console.log('>>>>>>>>>idMap', v.All.length, v.Mistakes.length, v.Learned.length, v.Unfinished.length);
       setFilter(filter);
       setHeaderRight(filter);
     });
+  };
+
+  const onModeSelected = (mode) => {
+    setViewMode(mode);
+    setHeaderRight(filter, mode);
   };
 
   const fetchQuestionIds = async (examVersion) => {
@@ -96,17 +119,20 @@ export default function StudyScreen({ navigation, route }) {
     }
     let Mistakes = _.isEmpty(progress)
       ? []
-      : Object.keys(progress).filter((k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong");
+      : Object.keys(progress).filter(
+          (k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong"
+        );
     let Learned = _.isEmpty(progress)
       ? []
-      : Object.keys(progress).filter((k) => !_.isEmpty(progress[k]) && progress[k].status === "correct");
+      : Object.keys(progress).filter(
+          (k) => !_.isEmpty(progress[k]) && progress[k].status === "correct"
+        );
     let Unfinished = _.difference(All, Mistakes);
     Unfinished = _.difference(Unfinished, Learned);
     return { All, Saved, Mistakes, Unfinished, Learned };
   };
 
   const questionIdIterator = (filter, startIndex = -1) => {
-    console.log('generating id iterator...', filter, idMap[filter].length);
     if (_.isEmpty(idMap[filter])) {
       // TODO: add no question warning
       return;

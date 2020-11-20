@@ -133,6 +133,7 @@ export const questionById = (examVersion, id) => {
           (_, { rows: { _array } }) => {
             _array.forEach((row) => {
               q = rowToQuestion(row.data.replace(/\\/g, ""));
+              q.examVersion = examVersion;
               res(q);
             });
           },
@@ -146,6 +147,5 @@ export const questionById = (examVersion, id) => {
 };
 
 export const rowToQuestion = (json) => {
-    console.log('>>>>>>>>>>>>', json);
   return JSON.parse(json);
 };

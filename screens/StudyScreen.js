@@ -57,7 +57,7 @@ export default function StudyScreen({ route }) {
         return this.i + 1 < this.questionIdArray.length;
       },
       hasPrevious: function () {
-        return this.i - 1 > 0;
+        return this.i - 1 >= 0;
       },
       next: function () {
         return this.questionIdArray[++this.i];
@@ -76,6 +76,7 @@ export default function StudyScreen({ route }) {
           examVersion={examVersion}
           showAnswerOnQuestionChange={viewmode === "challenge"}
           alwaysShowAnswer={viewmode === "browse"}
+          showQuestionLabels={true}
         />
       )}
     </View>

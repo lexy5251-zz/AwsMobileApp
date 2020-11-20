@@ -1,13 +1,13 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
 import { setQuestionProgress } from "../data";
 import _ from "lodash";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Toast from "react-native-simple-toast";
+import Toast from 'react-native-easy-toast'
 
 export default function QuestionViewerComponent({
   examVersion,
@@ -23,9 +23,11 @@ export default function QuestionViewerComponent({
   const [question, setQuestion] = useState();
   const [choices, setChoices] = useState([]);
   const [showAnswer, setShowAnswer] = useState(alwaysShowAnswer);
+  const toast = useRef(null);
+
   useEffect(() => {
     loadNextQuestion();
-    return () => { };
+    return () => {};
   }, [questionIdIterator, showAnswerOnQuestionChange, alwaysShowAnswer]);
 
   const onChoiceClicked = (c) => {
@@ -92,11 +94,11 @@ export default function QuestionViewerComponent({
     let shoudShowAnswer = !isShowingAnswer && showAnswerOnQuestionChange;
 
     if (shouldSaveProgress) {
-        saveProgress(question.id, choices, question.answers).then(() =>{
-          if (shoudShowAnswer) {
-            setShowAnswer(true);
-          }
-        });
+      saveProgress(question.id, choices, question.answers).then(() => {
+        if (shoudShowAnswer) {
+          setShowAnswer(true);
+        }
+      });
     }
 
     if (!shouldGoNext) {
@@ -121,13 +123,14 @@ export default function QuestionViewerComponent({
   const saveProgress = (id, choices, answers) => {
     let status = "wrong";
     if (_.isEqual(choices, answers)) {
-        status = "correct";
+      status = "correct";
     }
-    Toast.show(status);
-    return setQuestionProgress(id, examVersion, {status});
+    toast.current.show(status);
+    return setQuestionProgress(id, examVersion, { status });
   };
 
   return (
+    <View>
     <ScrollView
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
@@ -146,46 +149,37 @@ export default function QuestionViewerComponent({
           <Button
             titleStyle={{
               fontSize: 16,
-              paddingLeft: 10
+              paddingLeft: 10,
             }}
             buttonStyle={{
               paddingLeft: 15,
               paddingRight: 15,
-              backgroundColor: '#4FC1E9'
+              backgroundColor: "#4FC1E9",
             }}
-            icon={
-              <Icon
-                name="arrow-left"
-                size={15}
-                color="white"
-              />
-            }
-
+            icon={<Icon name="arrow-left" size={15} color="white" />}
             title="Prev"
-            onPress={() => onQuestionChangeButtonClick(-1)} />
+            onPress={() => onQuestionChangeButtonClick(-1)}
+          />
           <Button
             buttonStyle={{
               paddingLeft: 15,
               paddingRight: 15,
-              backgroundColor: '#4FC1E9'
+              backgroundColor: "#4FC1E9",
             }}
             titleStyle={{
               fontSize: 16,
-              paddingRight: 10
+              paddingRight: 10,
             }}
             iconRight={true}
-            icon={
-              <Icon
-                name="arrow-right"
-                size={15}
-                color="white"
-              />
-            }
+            icon={<Icon name="arrow-right" size={15} color="white" />}
             title="Next"
-            onPress={() => onQuestionChangeButtonClick(1)} />
+            onPress={() => onQuestionChangeButtonClick(1)}
+          />
         </View>
       </View>
     </ScrollView>
+    <Toast ref={toast}/>
+    </View>
   );
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Button } from "react-native";
-import { useState, useLayoutEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import { useState, useEffect } from "react";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
@@ -23,9 +23,9 @@ export default function StudyScreen({ navigation, route }) {
     Learned: [],
   });
   const [filter, setFilter] = useState("All");
-  const [viewmode, setViewMode] = useState("challenge");
+  const [mode, setMode] = useState("challenge");
 
-  const setHeaderRight = (currentFilter, currentMode) => {
+  const setHeaderRight = (filter, mode) => {
     let filterOptions = [
       "All",
       "Mistakes",
@@ -35,13 +35,13 @@ export default function StudyScreen({ navigation, route }) {
       "Cancel",
     ];
     filterOptions = filterOptions.map((s) => {
-      if (s === currentFilter) {
+      if (s === filter) {
         return `${s}   \u2713`;
       }
       return s;
     });
     let modeOptions = ["Challenge mode   \u2713", "Browse mode", "Cancel"];
-    if (currentMode === "browse") {
+    if (mode === "browse") {
       modeOptions = ["Challenge mode", "Browse mode    \u2713", "Cancel"];
     }
 
@@ -81,9 +81,10 @@ export default function StudyScreen({ navigation, route }) {
       ),
     });
   };
-  useLayoutEffect(() => {
-    setHeaderRight(filter);
-  }, [navigation]);
+
+  useEffect(() => {
+    setHeaderRight(filter, mode);
+  }, [mode, filter]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -92,21 +93,21 @@ export default function StudyScreen({ navigation, route }) {
     }, [])
   );
 
-  const onFilterSelected = (filter) => {
+  const onFilterSelected = (selected) => {
     fetchQuestionIds(examVersion).then((v) => {
-      if (_.isEmpty(v[filter])) {
+      if (_.isEmpty(v[selected])) {
         Toast.show("No questions");
         return;
       }
       setIdMap(v);
-      setFilter(filter);
-      setHeaderRight(filter);
+      setFilter(selected);
+      setHeaderRight(selected, mode);
     });
   };
 
-  const onModeSelected = (mode) => {
-    setViewMode(mode);
-    setHeaderRight(filter, mode);
+  const onModeSelected = (selected) => {
+    setMode(selected);
+    setHeaderRight(filter, selected);
   };
 
   const fetchQuestionIds = async (examVersion) => {
@@ -161,8 +162,8 @@ export default function StudyScreen({ navigation, route }) {
         <QuestionViewerComponent
           questionIdIterator={questionIdIterator(filter)}
           examVersion={examVersion}
-          showAnswerOnQuestionChange={viewmode === "challenge"}
-          alwaysShowAnswer={viewmode === "browse"}
+          showAnswerOnQuestionChange={mode === "challenge"}
+          alwaysShowAnswer={mode === "browse"}
           showQuestionLabels={true}
         />
       )}

@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
-import { getData, storeData, setQuestionStatus } from "../data";
+import { setQuestionStatus } from "../data";
 import _ from "lodash";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -25,7 +25,7 @@ export default function QuestionViewerComponent({
   useEffect(() => {
     loadNextQuestion();
     return () => { };
-  }, []);
+  }, [questionIdIterator, showAnswerOnQuestionChange, alwaysShowAnswer]);
 
   const onChoiceClicked = (c) => {
     let currentChoices;

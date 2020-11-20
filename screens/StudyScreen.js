@@ -1,13 +1,17 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { useState } from "react";
+import { View, StyleSheet, Button } from "react-native";
+import { useState, useLayoutEffect } from "react";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
+import RNPickerSelect from "react-native-picker-select";
 import _ from "lodash";
+import OptionsMenu from "../components/OptionMenuComponent";
 
-export default function StudyScreen({ route }) {
+const filterIcon = require("../assets/filter.png");
+
+export default function StudyScreen({ navigation, route }) {
   const { examVersion } = route.params;
   const [idMap, setIdMap] = useState({
     all: [],
@@ -16,8 +20,35 @@ export default function StudyScreen({ route }) {
     unfinished: [],
     learned: [],
   });
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("All");
   const [viewmode, setViewMode] = useState("browse");
+
+  // const setHeaderRight = (currentFilter) => {
+  //   let options = ["All", "Mistake", "Learned", "Saved"];
+  //   options = options.map((s) => {
+  //     if (s === currentFilter) {
+  //       return `${s}   \u2713`;
+  //     }
+  //     return s;
+  //   })
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <OptionsMenu
+  //         button={filterIcon}
+  //         buttonStyle={{
+  //           width: 32,
+  //           height: 16,
+  //           resizeMode: "contain",
+  //         }}
+  //         options={options}
+  //         actions={[]}
+  //       />
+  //     ),
+  //   });
+  // }
+  // useLayoutEffect(() => {
+  //   setHeaderRight(filter);
+  // }, [navigation]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -25,6 +56,8 @@ export default function StudyScreen({ route }) {
       return () => {};
     }, [])
   );
+
+  const onFilterButtonPressed = () => {};
 
   const fetchQuestionIds = async (examVersion) => {
     let qc = await questionCount(examVersion);

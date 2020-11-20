@@ -2,7 +2,6 @@ import React from "react";
 import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import ChoiceComponent from "./ChoiceComponent";
 import { CheckBox } from "react-native-elements";
-import RNPickerSelect from "react-native-picker-select";
 import { getQuestionProgress, setQuestionProgress } from "../data";
 import _ from "lodash";
 
@@ -71,29 +70,6 @@ export default class QuestionComponent extends React.Component {
       <SafeAreaView>
         <ScrollView>
           <View style={styles.singleQuestionContainer}>
-            <RNPickerSelect
-              placeholder={{
-                label: "Filter",
-                color: "black",
-              }}
-              style={{
-                placeholder: {
-                  fontSize: 12,
-                  fontWeight: "bold",
-                },
-              }}
-              onValueChange={(value) => console.log(value)}
-              items={[
-                { label: "Learned", value: "learned" },
-                { label: "Mistake", value: "mistake" },
-                { label: "Saved", value: "saved" },
-              ]}
-              onValueChange={(value) => {
-                this.setState({
-                  favSport0: value,
-                });
-              }}
-            />
             {this.props.showQuestionLabels && (<View style={styles.labels}>
               {titles.map((title) => {
                 let checked, color;

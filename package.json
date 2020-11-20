@@ -17,6 +17,7 @@
     "expo": "^39.0.3",
     "expo-asset": "~8.2.0",
     "expo-file-system": "~9.2.0",
+    "expo-font": "~8.3.0",
     "expo-sqlite": "~8.4.0",
     "humanize-duration": "^3.24.0",
     "lodash": "^4.17.20",
@@ -26,6 +27,7 @@
     "react-native-dialog": "^6.1.2",
     "react-native-elements": "^2.3.2",
     "react-native-gesture-handler": "~1.7.0",
+    "react-native-option-menu": "^1.1.3",
     "react-native-picker-select": "^8.0.3",
     "react-native-popup-dialog": "^0.18.3",
     "react-native-reanimated": "~1.13.0",
@@ -34,8 +36,7 @@
     "react-native-svg": "12.1.0",
     "react-native-web": "~0.13.7",
     "react-time-ago": "^6.2.1",
-    "victory-native": "^35.0.1",
-    "expo-font": "~8.3.0"
+    "victory-native": "^35.0.1"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

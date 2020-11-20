@@ -3,10 +3,11 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
-import { setQuestionStatus } from "../data";
+import { setQuestionProgress } from "../data";
 import _ from "lodash";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Toast from "react-native-simple-toast";
 
 export default function QuestionViewerComponent({
   examVersion,
@@ -85,15 +86,21 @@ export default function QuestionViewerComponent({
   };
 
   const onQuestionChangeButtonClick = (direction) => {
-    if (!alwaysShowAnswer) {
-      if (!(showAnswerOnQuestionChange && showAnswer)) {
-        saveProgress(question.id, choices, question.answers);
-      }
+    let isShowingAnswer = showAnswer;
+    let shouldGoNext = isShowingAnswer || !showAnswerOnQuestionChange;
+    let shouldSaveProgress = !isShowingAnswer;
+    let shoudShowAnswer = !isShowingAnswer && showAnswerOnQuestionChange;
 
-      if (showAnswerOnQuestionChange && !showAnswer) {
-        setShowAnswer(true);
-        return;
-      }
+    if (shouldSaveProgress) {
+        saveProgress(question.id, choices, question.answers).then(() =>{
+          if (shoudShowAnswer) {
+            setShowAnswer(true);
+          }
+        });
+    }
+
+    if (!shouldGoNext) {
+      return;
     }
 
     if (direction === -1 && questionIdIterator.hasPrevious()) {
@@ -112,14 +119,12 @@ export default function QuestionViewerComponent({
   };
 
   const saveProgress = (id, choices, answers) => {
-    if (_.isEmpty(choices)) {
-      return;
-    }
     let status = "wrong";
-      if (_.isEqual(choices, answers)) {
+    if (_.isEqual(choices, answers)) {
         status = "correct";
     }
-    setQuestionStatus(id, examVersion, {status});
+    Toast.show(status);
+    return setQuestionProgress(id, examVersion, {status});
   };
 
   return (

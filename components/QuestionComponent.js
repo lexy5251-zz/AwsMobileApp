@@ -19,7 +19,7 @@ export default class QuestionComponent extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.question.id === this.props.question.id) {
+    if (prevProps.question.id === this.props.question.id && prevProps.showAnswer === this.props.showAnswer) {
       return;
     }
     this.updateQuestionProgress();

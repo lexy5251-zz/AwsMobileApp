@@ -1,17 +1,16 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
 import _ from "lodash";
 import OptionsMenu from "../components/OptionMenuComponent";
-import Toast from "react-native-simple-toast";
+import Toast from 'react-native-easy-toast'
 
 const filterIcon = require("../assets/filter.png");
 const viewIcon = require("../assets/viewmode.png");
-
 
 export default function StudyScreen({ navigation, route }) {
   const { examVersion } = route.params;
@@ -24,6 +23,7 @@ export default function StudyScreen({ navigation, route }) {
   });
   const [filter, setFilter] = useState("All");
   const [mode, setMode] = useState("challenge");
+  const toast = useRef(null);
 
   const setHeaderRight = (filter, mode) => {
     let filterOptions = [
@@ -47,7 +47,7 @@ export default function StudyScreen({ navigation, route }) {
 
     navigation.setOptions({
       headerRight: () => (
-        <View style={{flexDirection:'row'}}>
+        <View style={{ flexDirection: "row" }}>
           <OptionsMenu
             button={filterIcon}
             buttonStyle={{
@@ -96,12 +96,13 @@ export default function StudyScreen({ navigation, route }) {
   const onFilterSelected = (selected) => {
     fetchQuestionIds(examVersion).then((v) => {
       if (_.isEmpty(v[selected])) {
-        Toast.show("No questions");
+        toast.current.show('no questions');
         return;
       }
       setIdMap(v);
       setFilter(selected);
       setHeaderRight(selected, mode);
+      toast.current.show(`filtered by ${selected}`);
     });
   };
 
@@ -167,6 +168,7 @@ export default function StudyScreen({ navigation, route }) {
           showQuestionLabels={true}
         />
       )}
+      <Toast ref={toast}/>
     </View>
   );
 }

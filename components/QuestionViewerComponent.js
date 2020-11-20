@@ -25,7 +25,7 @@ export default function QuestionViewerComponent({
   useEffect(() => {
     loadNextQuestion();
     return () => { };
-  }, [questionIdIterator]);
+  }, [questionIdIterator, showAnswerOnQuestionChange, alwaysShowAnswer]);
 
   const onChoiceClicked = (c) => {
     let currentChoices;

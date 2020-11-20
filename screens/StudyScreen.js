@@ -20,18 +20,24 @@ export default function StudyScreen({ navigation, route }) {
     Learned: [],
   });
   const [filter, setFilter] = useState("All");
-  const [viewmode, setViewMode] = useState("browse");
+  const [viewmode, setViewMode] = useState("challenge");
 
   const setHeaderRight = (currentFilter) => {
-    let options = ["All", "Mistakes", "Learned", "Unfinished", "Saved"];
-    options = options.map((s) => {
+    let filterOptions = ["All", "Mistakes", "Learned", "Unfinished", "Saved"];
+    filterOptions = filterOptions.map((s) => {
       if (s === currentFilter) {
         return `${s}   \u2713`;
       }
       return s;
     })
+    let modeOptions = ['Challenge mode   \u2713', 'Browse mode'];
+    if (viewmode === 'browse') {
+      modeOptions =  ['Challenge mode', 'Browse mode    \u2713'];
+    }
+   
     navigation.setOptions({
       headerRight: () => (
+        <View>
         <OptionsMenu
           button={filterIcon}
           buttonStyle={{
@@ -39,9 +45,20 @@ export default function StudyScreen({ navigation, route }) {
             height: 16,
             resizeMode: "contain",
           }}
-          options={options}
+          options={filterOptions}
           actions={[() => onFilterSelected('All'), () => onFilterSelected('Mistakes'), () => onFilterSelected('Learned'), () => onFilterSelected('Unfinished'), () => onFilterSelected('Saved')]}
         />
+        <OptionsMenu
+          button={filterIcon}
+          buttonStyle={{
+            width: 32,
+            height: 16,
+            resizeMode: "contain",
+          }}
+          options={modeOptions}
+          actions={[() => setViewMode('challenge'), () => setViewMode('browse')]}
+        />
+        </View>
       ),
     });
   }

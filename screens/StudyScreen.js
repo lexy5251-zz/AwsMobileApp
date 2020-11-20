@@ -5,7 +5,6 @@ import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
-import RNPickerSelect from "react-native-picker-select";
 import _ from "lodash";
 import OptionsMenu from "../components/OptionMenuComponent";
 
@@ -14,41 +13,41 @@ const filterIcon = require("../assets/filter.png");
 export default function StudyScreen({ navigation, route }) {
   const { examVersion } = route.params;
   const [idMap, setIdMap] = useState({
-    all: [],
-    saved: [],
-    mistakes: [],
-    unfinished: [],
-    learned: [],
+    All: [],
+    Saved: [],
+    Mistakes: [],
+    Unfinished: [],
+    Learned: [],
   });
   const [filter, setFilter] = useState("All");
   const [viewmode, setViewMode] = useState("browse");
 
-  // const setHeaderRight = (currentFilter) => {
-  //   let options = ["All", "Mistake", "Learned", "Saved"];
-  //   options = options.map((s) => {
-  //     if (s === currentFilter) {
-  //       return `${s}   \u2713`;
-  //     }
-  //     return s;
-  //   })
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <OptionsMenu
-  //         button={filterIcon}
-  //         buttonStyle={{
-  //           width: 32,
-  //           height: 16,
-  //           resizeMode: "contain",
-  //         }}
-  //         options={options}
-  //         actions={[]}
-  //       />
-  //     ),
-  //   });
-  // }
-  // useLayoutEffect(() => {
-  //   setHeaderRight(filter);
-  // }, [navigation]);
+  const setHeaderRight = (currentFilter) => {
+    let options = ["All", "Mistakes", "Learned", "Unfinished", "Saved"];
+    options = options.map((s) => {
+      if (s === currentFilter) {
+        return `${s}   \u2713`;
+      }
+      return s;
+    })
+    navigation.setOptions({
+      headerRight: () => (
+        <OptionsMenu
+          button={filterIcon}
+          buttonStyle={{
+            width: 32,
+            height: 16,
+            resizeMode: "contain",
+          }}
+          options={options}
+          actions={[() => onFilterSelected('All'), () => onFilterSelected('Mistakes'), () => onFilterSelected('Learned'), () => onFilterSelected('Unfinished'), () => onFilterSelected('Saved')]}
+        />
+      ),
+    });
+  }
+  useLayoutEffect(() => {
+    setHeaderRight(filter);
+  }, [navigation]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -57,28 +56,40 @@ export default function StudyScreen({ navigation, route }) {
     }, [])
   );
 
-  const onFilterButtonPressed = () => {};
+  const onFilterSelected = (filter) => {
+    console.log('>>>>>on filter selected', filter);
+    fetchQuestionIds(examVersion).then((v) => {
+      if (_.isEmpty(v[filter])) {
+        return;
+      }
+      setIdMap(v);
+      console.log('>>>>>>>>>idMap', v.All.length, v.Mistakes.length, v.Learned.length, v.Unfinished.length);
+      setFilter(filter);
+      setHeaderRight(filter);
+    });
+  };
 
   const fetchQuestionIds = async (examVersion) => {
     let qc = await questionCount(examVersion);
     let progress = await getData(`@${examVersion}_progress`);
-    let saved = await getData(`@${examVersion}_saved`);
-    let all = [];
+    let Saved = await getData(`@${examVersion}_saved`);
+    let All = [];
     for (let i = 1; i <= qc; i++) {
-      all.push(`${i}`);
+      All.push(`${i}`);
     }
-    let mistakes = _.isEmpty(progress)
+    let Mistakes = _.isEmpty(progress)
       ? []
-      : Object.keys(progress).filter((k) => progress[k] === "wrong");
-    let learned = _.isEmpty(progress)
+      : Object.keys(progress).filter((k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong");
+    let Learned = _.isEmpty(progress)
       ? []
-      : Object.keys(progress).filter((k) => progress[k] === "correct");
-    let unfinished = _.difference(all, mistakes);
-    unfinished = _.difference(unfinished, learned);
-    return { all, saved, mistakes, unfinished, learned };
+      : Object.keys(progress).filter((k) => !_.isEmpty(progress[k]) && progress[k].status === "correct");
+    let Unfinished = _.difference(All, Mistakes);
+    Unfinished = _.difference(Unfinished, Learned);
+    return { All, Saved, Mistakes, Unfinished, Learned };
   };
 
   const questionIdIterator = (filter, startIndex = -1) => {
+    console.log('generating id iterator...', filter, idMap[filter].length);
     if (_.isEmpty(idMap[filter])) {
       // TODO: add no question warning
       return;

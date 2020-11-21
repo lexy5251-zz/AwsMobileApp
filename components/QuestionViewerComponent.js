@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
@@ -136,6 +136,7 @@ export default function QuestionViewerComponent({
       showsHorizontalScrollIndicator={false}
     >
       <View style={styles.container}>
+  <Text>{questionIdIterator.i+1}/{questionIdIterator.questionIdArray.length}</Text>
         {question && true && (
           <QuestionComponent
             question={question}

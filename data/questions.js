@@ -1,6 +1,7 @@
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import * as SQLite from "expo-sqlite";
+import unescapeJs from 'unescape-js';
 
 const questionBundle = {
   c01: {
@@ -13,6 +14,12 @@ const questionBundle = {
     dbFileName: "saa_c02_questions0",
     // react native doesn't recognize .db as assets, use .mp4 here.
     srcURI: Asset.fromModule(require("../assets/data/saa_c02_questions.mp4"))
+      .uri,
+  },
+  sample: {
+    dbFileName: "saa_c02_questions_20",
+    // react native doesn't recognize .db as assets, use .mp4 here.
+    srcURI: Asset.fromModule(require("../assets/data/saa_c02_questions_20.mp4"))
       .uri,
   },
 };
@@ -54,8 +61,7 @@ export const pickQuestionsRandomly = async (examVersion, count) => {
       [count],
       (_, { rows: { _array } }) => {
         _array.forEach((row) => {
-          let q = rowToQuestion(row.data.replace(/\\/g, ""));
-          questions.push(q);
+          questions.push(rowToQuestion(row.data, examVersion));
         });
       },
       (_, err) => {
@@ -79,8 +85,7 @@ export const questionsByIds = async (examVersion, ids) => {
       [ids.join()],
       (_, { rows: { _array } }) => {
         _array.forEach((row) => {
-          let q = rowToQuestion(row.data.replace(/\\/g, ""));
-          questions.push(q);
+          questions.push(rowToQuestion(row.data, examVersion));
         });
       },
       (_, err) => {
@@ -115,10 +120,6 @@ export const questionCount = async (examVersion) => {
   });
 };
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export const questionById = (examVersion, id) => {
   return loadQuestionDBIfNotExists(examVersion).then(() => {
     return new Promise((res, rej) => {
@@ -132,9 +133,7 @@ export const questionById = (examVersion, id) => {
           [id],
           (_, { rows: { _array } }) => {
             _array.forEach((row) => {
-              q = rowToQuestion(row.data.replace(/\\/g, ""));
-              q.examVersion = examVersion;
-              res(q);
+              res(rowToQuestion(row.data, examVersion));
             });
           },
           (_, err) => {
@@ -146,6 +145,15 @@ export const questionById = (examVersion, id) => {
   });
 };
 
-export const rowToQuestion = (json) => {
-  return JSON.parse(json);
+export const rowToQuestion = (rawData, examVersion) => {
+  let json = unescapeData(rawData);
+  let q = JSON.parse(json);
+  q.examVersion = examVersion;
+  return q;
 };
+
+const unescapeData = (data) => {
+  let res = unescapeJs(data);
+  res = res.replace(/\\,/g, ",");
+  return res;
+}

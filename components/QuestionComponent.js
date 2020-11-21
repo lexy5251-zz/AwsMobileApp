@@ -104,6 +104,7 @@ export default class QuestionComponent extends React.Component {
                   <CheckBox
                     center
                     title={title}
+                    key={title}
                     onPress={() => this.handleLabelButtonClick(title)}
                     size={10}
                     checked={checked}

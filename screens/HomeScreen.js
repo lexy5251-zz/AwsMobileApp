@@ -9,13 +9,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
 
 export default function HomeScreen({ navigation }) {
+  const [sampleProgress, setSampleProgress] = useState({});
   const [c01Progress, setC01Progress] = useState({});
   const [c02Progress, setC02Progress] = useState({});
   
   useFocusEffect(
     React.useCallback(() => {
-      getProgress("c01", 1185).then((p) => setC01Progress(p));
+      getProgress("sample", 20).then((p) => setSampleProgress(p));
       getProgress("c02", 466).then((p) => setC02Progress(p));
+      getProgress("c01", 1185).then((p) => setC01Progress(p));
       return () => {};
     }, [])
   );
@@ -73,21 +75,21 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.cardTitle}>
           <Text style={styles.textFont}>Sample</Text>
           <Text style={styles.total}>
-            Total {c01Progress ? c01Progress.total : 0} Questions
+            Total {sampleProgress ? sampleProgress.total : 0} Questions
           </Text>
         </View>
         <View style={styles.barStyle}>
-          <ProgressBar data={progressToBarData(c01Progress)} /> 
+          <ProgressBar data={progressToBarData(sampleProgress)} /> 
           <View style={styles.barText}>
-            <Text style={{marginRight: 10}}>Learned: {c01Progress.learned}</Text>
-            <Text>Mistakes: {c01Progress.mistakes}</Text>
+            <Text style={{marginRight: 10}}>Learned: {sampleProgress.learned}</Text>
+            <Text>Mistakes: {sampleProgress.mistakes}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              onStudyPressed("c01");
+              onStudyPressed("sample");
             }}
           >
           <Text style={styles.text}>Study</Text>
@@ -95,7 +97,7 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              onTestPressed("c01");
+              onTestPressed("sample");
             }}
           >
             <Text style={styles.text}>Test</Text>
@@ -117,7 +119,7 @@ export default function HomeScreen({ navigation }) {
           }
           onPress={() => onLockerClick} />
       <View style={styles.cardTitle}>
-          <Text style={styles.textFont}>SAA-CA01</Text>
+          <Text style={styles.textFont}>SAA-C02</Text>
           <Text style={styles.total}>
             Total {c02Progress ? c02Progress.total : 0} Questions
           </Text>
@@ -145,19 +147,19 @@ export default function HomeScreen({ navigation }) {
         </View>
         <View style={styles.horizontalLine}/>
         <View style={styles.cardTitle}>
-          <Text style={styles.textFont}>SAA-CA02</Text>
+          <Text style={styles.textFont}>SAA-C01</Text>
           <Text style={styles.total}>
-            Total {c02Progress ? c02Progress.total : 0} Questions
+            Total {c01Progress ? c01Progress.total : 0} Questions
           </Text>
         </View>
         <View style={styles.barStyle}>
-          <ProgressBar data={progressToBarData(c02Progress)} />
+          <ProgressBar data={progressToBarData(c01Progress)} />
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              onStudyPressed("c02");
+              onStudyPressed("c01");
             }}
           >
             <Text style={styles.text}>Study</Text>
@@ -165,7 +167,7 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              onTestPressed("c02");
+              onTestPressed("c01");
             }}
           >
             <Text style={styles.text}>Test</Text>

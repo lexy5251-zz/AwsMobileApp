@@ -9,6 +9,7 @@ import TestMenuScreen from './screens/TestMenuScreen';
 import TestHistoryScreen from './screens/TestHistoryScreen';
 import { AppLoading } from 'expo';
 import {useFonts} from 'expo-font';
+import iap from './iap/iap';
 
 export default function App() {
   let [fontsLoaded] = useFonts({

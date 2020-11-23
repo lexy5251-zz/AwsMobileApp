@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import _ from "lodash";
 import { Card } from "react-native-elements";
@@ -6,10 +6,11 @@ import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import ProgressBar from "../components/ProgressBar";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Button } from "react-native-elements";
 import Dialog from "react-native-dialog";
+import iap from "../iap/fakeiap";
 
 export default function HomeScreen({ navigation }) {
+  const productSKU = "saa-c02-bundle";
   const [sampleProgress, setSampleProgress] = useState({});
   const [c01Progress, setC01Progress] = useState({});
   const [c02Progress, setC02Progress] = useState({});
@@ -19,6 +20,11 @@ export default function HomeScreen({ navigation }) {
   ] = useState(false);
   const [showFullContents, setShowFullContents] = useState(true);
 
+  useEffect(() => {
+    refreshPurchaseStatus();
+    return () => {};
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       getProgress("sample", 20).then((p) => setSampleProgress(p));
@@ -27,6 +33,31 @@ export default function HomeScreen({ navigation }) {
       return () => {};
     }, [])
   );
+
+  const refreshPurchaseStatus = () => {
+    if (!iap.isInitialized) {
+      initIAP().then(() => {
+        setShowFullContents(
+          iap.isInitialized &&
+            !_.isEmpty(iap.activeProducts) &&
+            !_.isEmpty(iap.activeProducts.filter((p) => p.sku === productSKU))
+        );
+        return;
+      });
+    }
+    setShowFullContents(
+      iap.isInitialized &&
+        !_.isEmpty(iap.activeProducts) &&
+        !_.isEmpty(iap.activeProducts.filter((p) => p.sku === productSKU))
+    );
+  };
+
+  const initIAP = async () => {
+    await iap.init();
+    await iap.setUserId("1");
+    await iap.getActiveProducts();
+    await iap.getProductsForSale();
+  };
 
   const getProgress = (examVersion, total) => {
     let key = `@${examVersion}_progress`;
@@ -96,7 +127,9 @@ export default function HomeScreen({ navigation }) {
             label="Yes"
             onPress={() => {
               setConfirmPurchaseDialogVisible(false);
-              console.log(">>>>buy!");
+              iap.buy(productSKU).then(() => {
+                refreshPurchaseStatus();
+              });
             }}
           />
         </Dialog.Container>
@@ -134,14 +167,8 @@ export default function HomeScreen({ navigation }) {
               </View>
             </View>
           </View>
-          <View style={{ position: "absolute", width: "100%", height: "100%" }}>
-            <Button
-              buttonStyle={{
-                paddingBottom: 20,
-                backgroundColor: "transparent",
-              }}
-              icon={<Icon name="lock" size={16} color="#6C6C6C" />}
-            />
+          <View style={{ position: "absolute", width: "100%", height: "100%", alignItems: 'center' }}>
+            <Icon name="lock" size={16} color="#6C6C6C" />
           </View>
         </Card>
       </TouchableOpacity>
@@ -202,7 +229,13 @@ export default function HomeScreen({ navigation }) {
               </Text>
             </View>
             <View style={styles.barStyle}>
-              <ProgressBar data={progressToBarData(c02Progress)} />
+              <ProgressBar
+                data={progressToBarData(c02Progress)}
+              />
+              <View style={styles.barText}>
+                <Text style={{ marginRight: 10 }}>Learned: {c02Progress.learned}</Text>
+                <Text>Mistakes: {c02Progress.mistakes}</Text>
+              </View>
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -232,6 +265,12 @@ export default function HomeScreen({ navigation }) {
             </View>
             <View style={styles.barStyle}>
               <ProgressBar data={progressToBarData(c01Progress)} />
+              <View style={styles.barText}>
+                <Text style={{ marginRight: 10 }}>
+                  Learned: {c01Progress.learned}
+                </Text>
+                <Text>Mistakes: {c01Progress.mistakes}</Text>
+              </View>
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity

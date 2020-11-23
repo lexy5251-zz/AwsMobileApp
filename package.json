@@ -36,7 +36,6 @@
     "react-native-web": "~0.13.7",
     "react-time-ago": "^6.2.1",
     "unescape-js": "^1.1.4",
-    "victory-native": "^35.0.1"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

@@ -131,55 +131,54 @@ export default function QuestionViewerComponent({
 
   return (
     <View>
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
-    >
-      <View style={styles.container}>
-  <Text>{questionIdIterator.i+1}/{questionIdIterator.questionIdArray.length}</Text>
-        {question && true && (
-          <QuestionComponent
-            question={question}
-            selectedChoices={choices}
-            showAnswer={showAnswer}
-            onChoiceClicked={onChoiceClicked}
-            showQuestionLabels={showQuestionLabels}
-          ></QuestionComponent>
-        )}
-        <View style={styles.fixToText}>
-          <Button
-            titleStyle={{
-              fontSize: 16,
-              paddingLeft: 10,
-            }}
-            buttonStyle={{
-              paddingLeft: 15,
-              paddingRight: 15,
-              backgroundColor: "#4FC1E9",
-            }}
-            icon={<Icon name="arrow-left" size={15} color="white" />}
-            title="Prev"
-            onPress={() => onQuestionChangeButtonClick(-1)}
-          />
-          <Button
-            buttonStyle={{
-              paddingLeft: 15,
-              paddingRight: 15,
-              backgroundColor: "#4FC1E9",
-            }}
-            titleStyle={{
-              fontSize: 16,
-              paddingRight: 10,
-            }}
-            iconRight={true}
-            icon={<Icon name="arrow-right" size={15} color="white" />}
-            title="Next"
-            onPress={() => onQuestionChangeButtonClick(1)}
-          />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          {question && true && (
+            <QuestionComponent
+              question={question}
+              selectedChoices={choices}
+              showAnswer={showAnswer}
+              onChoiceClicked={onChoiceClicked}
+              showQuestionLabels={showQuestionLabels}
+            ></QuestionComponent>
+          )}
+          <View style={styles.fixToText}>
+            <Button
+              titleStyle={{
+                fontSize: 16,
+                paddingLeft: 10,
+              }}
+              buttonStyle={{
+                paddingLeft: 15,
+                paddingRight: 15,
+                backgroundColor: "#4FC1E9",
+              }}
+              icon={<Icon name="arrow-left" size={15} color="white" />}
+              title="Prev"
+              onPress={() => onQuestionChangeButtonClick(-1)}
+            />
+            <Button
+              buttonStyle={{
+                paddingLeft: 15,
+                paddingRight: 15,
+                backgroundColor: "#4FC1E9",
+              }}
+              titleStyle={{
+                fontSize: 16,
+                paddingRight: 10,
+              }}
+              iconRight={true}
+              icon={<Icon name="arrow-right" size={15} color="white" />}
+              title="Next"
+              onPress={() => onQuestionChangeButtonClick(1)}
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
-    <Toast ref={toast}/>
+      </ScrollView>
+      <Toast ref={toast} />
     </View>
   );
 }
@@ -187,7 +186,7 @@ export default function QuestionViewerComponent({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     marginTop: 10,
   },
   fixToText: {

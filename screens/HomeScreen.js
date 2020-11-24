@@ -70,7 +70,6 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>Hello, Good Morning</Text>
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardTitle}>
           <Text style={styles.textFont}>Sample</Text>
@@ -181,7 +180,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: "2%",
+    paddingTop: "2%",
     backgroundColor: '#ffffff'
   },
 
@@ -201,13 +200,6 @@ const styles = StyleSheet.create({
     marginTop: "2%", 
     marginBottom: "5%",
     borderRadius: 5
-  },
-
-  titleText: {
-    paddingLeft: "5%",
-    fontSize: 18,
-    marginTop: '5%',
-    fontFamily: "Avenir-Book",
   },
 
   buttonContainer: {

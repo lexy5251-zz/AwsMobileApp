@@ -128,5 +128,7 @@ export default function TestScreen({ route }) {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    paddingTop: "2%",
+    backgroundColor: '#ffffff'
   },
 });

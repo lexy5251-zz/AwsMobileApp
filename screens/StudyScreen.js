@@ -1,16 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, Text, Switch, Card } from "react-native";
+import { useState, useRef } from "react";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import { getData } from "../data";
 import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
 import _ from "lodash";
 import OptionsMenu from "../components/OptionMenuComponent";
-import Toast from 'react-native-easy-toast'
-
-const filterIcon = require("../assets/filter.png");
-const viewIcon = require("../assets/viewmode.png");
+import Toast from 'react-native-easy-toast';
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function StudyScreen({ navigation, route }) {
   const { examVersion } = route.params;
@@ -22,74 +20,14 @@ export default function StudyScreen({ navigation, route }) {
     Learned: [],
   });
   const [filter, setFilter] = useState("All");
-  const [mode, setMode] = useState("challenge");
+  const [mode, setMode] = useState("browse");
+  const [questionIndex, setQuestionIndex] = useState(0);
   const toast = useRef(null);
-
-  const setHeaderRight = (filter, mode) => {
-    let filterOptions = [
-      "All",
-      "Mistakes",
-      "Learned",
-      "Unfinished",
-      "Saved",
-      "Cancel",
-    ];
-    filterOptions = filterOptions.map((s) => {
-      if (s === filter) {
-        return `${s}   \u2713`;
-      }
-      return s;
-    });
-    let modeOptions = ["Challenge mode   \u2713", "Browse mode", "Cancel"];
-    if (mode === "browse") {
-      modeOptions = ["Challenge mode", "Browse mode    \u2713", "Cancel"];
-    }
-
-    navigation.setOptions({
-      headerRight: () => (
-        <View style={{ flexDirection: "row" }}>
-          <OptionsMenu
-            button={filterIcon}
-            buttonStyle={{
-              width: 32,
-              height: 16,
-              resizeMode: "contain",
-            }}
-            options={filterOptions}
-            actions={[
-              () => onFilterSelected("All"),
-              () => onFilterSelected("Mistakes"),
-              () => onFilterSelected("Learned"),
-              () => onFilterSelected("Unfinished"),
-              () => onFilterSelected("Saved"),
-            ]}
-          />
-          <OptionsMenu
-            button={viewIcon}
-            buttonStyle={{
-              width: 32,
-              height: 16,
-              resizeMode: "contain",
-            }}
-            options={modeOptions}
-            actions={[
-              () => onModeSelected("challenge"),
-              () => onModeSelected("browse"),
-            ]}
-          />
-        </View>
-      ),
-    });
-  };
-
-  useEffect(() => {
-    setHeaderRight(filter, mode);
-  }, [mode, filter]);
 
   useFocusEffect(
     React.useCallback(() => {
       fetchQuestionIds(examVersion).then((v) => setIdMap(v));
-      return () => {};
+      return () => { };
     }, [])
   );
 
@@ -99,16 +37,11 @@ export default function StudyScreen({ navigation, route }) {
         toast.current.show('no questions');
         return;
       }
+      setQuestionIndex(0);
       setIdMap(v);
       setFilter(selected);
-      setHeaderRight(selected, mode);
       toast.current.show(`filtered by ${selected}`);
     });
-  };
-
-  const onModeSelected = (selected) => {
-    setMode(selected);
-    setHeaderRight(filter, selected);
   };
 
   const fetchQuestionIds = async (examVersion) => {
@@ -122,13 +55,13 @@ export default function StudyScreen({ navigation, route }) {
     let Mistakes = _.isEmpty(progress)
       ? []
       : Object.keys(progress).filter(
-          (k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong"
-        );
+        (k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong"
+      );
     let Learned = _.isEmpty(progress)
       ? []
       : Object.keys(progress).filter(
-          (k) => !_.isEmpty(progress[k]) && progress[k].status === "correct"
-        );
+        (k) => !_.isEmpty(progress[k]) && progress[k].status === "correct"
+      );
     let Unfinished = _.difference(All, Mistakes);
     Unfinished = _.difference(Unfinished, Learned);
     return { All, Saved, Mistakes, Unfinished, Learned };
@@ -157,24 +90,114 @@ export default function StudyScreen({ navigation, route }) {
     };
   };
 
+  let filterOptions = [
+    "All",
+    "Mistakes",
+    "Learned",
+    "Unfinished",
+    "Saved",
+    "Cancel",
+  ];
+  filterOptions = filterOptions.map((s) => {
+    if (s === filter) {
+      return `${s}   \u2713`;
+    }
+    return s;
+  });
+  let modeOptions = ["Challenge mode   \u2713", "Browse mode", "Cancel"];
+  if (mode === "browse") {
+    modeOptions = ["Challenge mode", "Browse mode    \u2713", "Cancel"];
+  }
+
+  const MyIcon = ({filter}) => {
+    return (
+    <Text>Filtered By:{filter}</Text>
+    )
+}
+  const toggleSwitch = (value) => {
+    if (value) {
+      setMode("browse");
+    } else {
+      setMode("challenge");
+    }
+  }
+
+  const handleQuestionChange = (index) => {
+    setQuestionIndex(index);
+  }
+
   return (
-    <View style={styles.view}>
+    <ScrollView style={styles.view}>
+      <View style={styles.controllerStyle}>
+        <View>
+          <Switch
+            trackColor={{ false: "#C2C0C0", true: "#F1BC5E" }}
+            onValueChange={value => toggleSwitch(value)}
+            value={mode === "browse"}
+            style={{ transform: [{ scaleX: .9 }, { scaleY: .8 }] }}
+
+          />
+          <Text style={styles.toggleText}>Show Anwser</Text>
+        </View>
+        <Text style={styles.pageNumberStyle}>{questionIndex + 1}/{idMap[filter].length}</Text>
+        <View style={styles.filterStyle}>
+          <OptionsMenu
+            customButton={(<MyIcon filter={filter} />)}
+            options={filterOptions}
+            actions={[
+              () => onFilterSelected("All"),
+              () => onFilterSelected("Mistakes"),
+              () => onFilterSelected("Learned"),
+              () => onFilterSelected("Unfinished"),
+              () => onFilterSelected("Saved"),
+            ]}
+          />
+        </View>
+      </View>
+      
       {questionIdIterator(filter) && true && (
         <QuestionViewerComponent
-          questionIdIterator={questionIdIterator(filter)}
+          questionIdIterator={questionIdIterator(filter, questionIndex - 1)}
           examVersion={examVersion}
           showAnswerOnQuestionChange={mode === "challenge"}
           alwaysShowAnswer={mode === "browse"}
           showQuestionLabels={true}
+          onQuestionChange={handleQuestionChange}
         />
       )}
-      <Toast ref={toast}/>
-    </View>
+      <Toast ref={toast} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    paddingTop: "2%",
+    backgroundColor: '#ffffff',
   },
+
+  filterStyle: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+
+  controllerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    alignItems: "center",    
+  },
+  toggleText: {
+    fontSize: 9,
+    fontFamily: "Avenir-Heavy",
+  },
+
+  pageNumberStyle: {
+    textAlign: 'center',
+
+  }
+  
 });

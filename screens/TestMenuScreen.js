@@ -39,13 +39,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: "4%",
-    padding: "2%",
-  },
-
-  titleText: {
-    paddingLeft: "5%",
-    fontSize: 18,
-    fontFamily: "Avenir-Book",
+    paddingTop: "2%",
+    backgroundColor: '#ffffff',
   },
 
   buttonContainer: {

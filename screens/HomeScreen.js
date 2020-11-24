@@ -300,8 +300,8 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: "2%",
-    backgroundColor: "#ffffff",
+    paddingTop: "2%",
+    backgroundColor: '#ffffff'
   },
   cardContainer: {
     shadowOffset: { width: 5, height: 5 },
@@ -320,14 +320,7 @@ const styles = StyleSheet.create({
     marginBottom: "5%",
     borderRadius: 5,
   },
-
-  titleText: {
-    paddingLeft: "5%",
-    fontSize: 18,
-    marginTop: "5%",
-    fontFamily: "Avenir-Book",
-  },
-
+  
   buttonContainer: {
     flexWrap: "wrap",
     flexDirection: "row",

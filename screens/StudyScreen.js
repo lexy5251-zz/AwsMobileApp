@@ -125,7 +125,7 @@ export default function StudyScreen({ navigation, route }) {
   };
 
   return (
-    <ScrollView style={styles.view}>
+    <View style={styles.view}>
       <View style={styles.controllerStyle}>
         <View>
           <Switch
@@ -165,7 +165,7 @@ export default function StudyScreen({ navigation, route }) {
         />
       )}
       <Toast ref={toast} />
-    </ScrollView>
+    </View>
   );
 }
 

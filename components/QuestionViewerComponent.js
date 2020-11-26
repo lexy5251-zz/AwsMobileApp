@@ -130,12 +130,12 @@ export default function QuestionViewerComponent({
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       >
-        <View style={styles.container}>
+        <View>
           {question && true && (
             <QuestionComponent
               question={question}
@@ -145,7 +145,9 @@ export default function QuestionViewerComponent({
               showQuestionLabels={showQuestionLabels}
             ></QuestionComponent>
           )}
-          <View style={styles.fixToText}>
+          </View>
+          </ScrollView>
+          <View style={styles.bottons}>
             <Button
               titleStyle={{
                 fontSize: 16,
@@ -165,6 +167,7 @@ export default function QuestionViewerComponent({
                 paddingLeft: 15,
                 paddingRight: 15,
                 backgroundColor: "#4FC1E9",
+                position: 'relative'
               }}
               titleStyle={{
                 fontSize: 16,
@@ -176,8 +179,6 @@ export default function QuestionViewerComponent({
               onPress={() => onQuestionChangeButtonClick(1)}
             />
           </View>
-        </View>
-      </ScrollView>
       <Toast ref={toast} />
     </View>
   );
@@ -189,11 +190,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 10,
   },
-  fixToText: {
+  bottons: {
     flexDirection: "row",
     display: "flex",
     justifyContent: "space-between",
-    marginTop: 50,
     color: "#4FC1E9",
+    padding: 10,
   },
 });

@@ -8,7 +8,7 @@ import { getData, storeData } from "../data";
 import Dialog from "react-native-dialog";
 
 
-export default function TestScreen({ route }) {
+export default function TestScreen({ route, navigation }) {
   const { examVersion, resumingSession } = route.params;
   const [session, setSession] = useState(resumingSession);
   const [finishDialogVisible, setFinishDialogVisible] = useState(false);
@@ -95,7 +95,7 @@ export default function TestScreen({ route }) {
   };
 
   const showTestResult = () => {
-    console.log('show test result!!')
+    navigation.replace("TestHistory", { examVersion });
   };
 
   return (

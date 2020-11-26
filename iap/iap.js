@@ -14,9 +14,9 @@ class IAPStore {
 			// Init iaphub
 			await Iaphub.init({
 				// The app id is available on the settings page of your app
-				appId: "5fb97ca4d1efbd0ea8ca5327",
+				appId: "5fbc8ec1c086540e9a8aebb5",
 				// The (client) api key is available on the settings page of your app
-				apiKey: "pugcNmyF6IVajTvrtGewyIdCXb8hvI4d",
+				apiKey: "V7KolpkL7apFXcACjgwcjQcTawU49bkm",
 				// The environment is used to determine the webhooks configuration ('production', 'staging', 'development')
 				environment: "production"
 			});
@@ -34,17 +34,27 @@ class IAPStore {
 
 	// Set user id
 	async setUserId(userId) {
+		console.log('>>>>>>>before setUserId');
 		Iaphub.setUserId(userId);
+		console.log('>>>>>>>after setUserId');
+
 	}
 
 	// Get products for sale
 	async getProductsForSale() {
+		console.log('>>>>before iap getProductsForSale', this.activeProducts);
+
 		this.productsForSale = await Iaphub.getProductsForSale();
+		console.log('>>>>iap getProductsForSale', this.activeProducts);
+
 	}
 
 	// Get active products
 	async getActiveProducts() {
+		console.log('>>>>before iap getActiveProducts', this.activeProducts);
+
 		this.activeProducts = await Iaphub.getActiveProducts();
+		console.log('>>>>iap getActiveProducts', this.activeProducts);
 	}
 
 	// Call this method when an user click on one of your products
@@ -57,7 +67,7 @@ class IAPStore {
 			if (transaction.webhookStatus == "failed") {
 				Alert.alert(
 					"Purchase delayed",
-					"Your purchase was successful but we need some more time to validate it, should arrive soon! Otherwise contact the support (support@myapp.com)"
+					"Your purchase was successful but we need some more time to validate it, should arrive soon! Otherwise contact the support (ezpass111111@gmail.com)"
 				);
 			}
 			// Everything was successful! Yay!
@@ -107,14 +117,14 @@ class IAPStore {
 			else if (err.code == "receipt_request_failed") {
 				Alert.alert(
 					"We're having trouble validating your transaction",
-					"Please try to restore your purchases later (Button in the settings) or contact the support (support@myapp.com)"
+					"Please try to restore your purchases later (Button in the settings) or contact the support (ezpass111111@gmail.com)"
 				);
 			}
 			// Couldn't buy product for many other reasons (the user shouldn't be charged)
 			else {
 				Alert.alert(
 					"Purchase error",
-					"We were not able to process your purchase, please try again later or contact the support (support@myapp.com)"
+					"We were not able to process your purchase, please try again later or contact the support (ezpass111111@gmail.com)"
 				);
 			}
 		}

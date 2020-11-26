@@ -7,20 +7,25 @@ import { useFocusEffect } from "@react-navigation/native";
 import ProgressBar from "../components/ProgressBar";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-elements";
-import iap from "../iap/iap";
-//import { getUniqueId } from "react-native-device-info";
+import Dialog from "react-native-dialog";
+import iap from '../iap/iap';
 
 export default function HomeScreen({ navigation }) {
+  const productSKU = 'saa_all_version_bundle'
   const [sampleProgress, setSampleProgress] = useState({});
   const [c01Progress, setC01Progress] = useState({});
   const [c02Progress, setC02Progress] = useState({});
-  const [purchased, setPurchased] = useState(false);
+  const [
+    confirmPurchaseDialogVisible,
+    setConfirmPurchaseDialogVisible,
+  ] = useState(false);
+  const [showFullContents, setShowFullContents] = useState(true);
 
   useEffect(() => {
-    initIAP().then(() => {
-      resetPurchaseStatus();
-    });
-    return () => {};
+    refreshPurchaseStatus();
+    return () => {
+      
+    }
   }, []);
 
   useFocusEffect(
@@ -32,21 +37,22 @@ export default function HomeScreen({ navigation }) {
     }, [])
   );
 
+  const refreshPurchaseStatus = ()=>  {
+    if (!iap.isInitialized) {
+      initIAP().then(() => {
+        setShowFullContents(iap.isInitialized && !_.isEmpty(iap.activeProducts) && !_.isEmpty(iap.activeProducts.filter(p => p.sku===productSKU)));
+        return;
+      });
+    }
+    setShowFullContents(iap.isInitialized && !_.isEmpty(iap.activeProducts) && !_.isEmpty(iap.activeProducts.filter(p => p.sku===productSKU)));
+    }
+
   const initIAP = async () => {
     await iap.init();
     await iap.setUserId('1');
     await iap.getActiveProducts();
     await iap.getProductsForSale();
-    console.log('>>>>>>>iap', iap.activeProducts, iap.isInitialized, iap.productsForSale, iap.skuProcessing);
-  };
-
-  const resetPurchaseStatus = () => {
-    let bundle = _.filter(
-      iap.activeProducts,
-      (p) => p.sku === "saa-c02-bundle"
-    );
-    setPurchased(!_.isEmpty(bundle));
-  };
+  }
 
   const getProgress = (examVersion, total) => {
     let key = `@${examVersion}_progress`;
@@ -96,94 +102,119 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("TestMenu", { examVersion });
   };
 
-  const UnpurchasedHome = () => {
+  const ForSaleContents = () => {
     return (
-      <View>
+      <TouchableOpacity
+        onPress={() => {
+          setConfirmPurchaseDialogVisible(true);
+        }}
+      >
+        <Dialog.Container visible={confirmPurchaseDialogVisible}>
+          <Dialog.Description>
+            Purchase to get full access to all questions for both SAA-C01 and
+            SAA-C02?
+          </Dialog.Description>
+          <Dialog.Button
+            label="No"
+            onPress={() => setConfirmPurchaseDialogVisible(false)}
+          />
+          <Dialog.Button
+            label="Yes"
+            onPress={() => {
+              setConfirmPurchaseDialogVisible(false);
+              iap.buy(productSKU).then(() => {
+                refreshPurchaseStatus();
+              });
+            }}
+          />
+        </Dialog.Container>
         <Card containerStyle={styles.cardContainer}>
-          <View style={styles.cardTitle}>
-            <Text style={styles.textFont}>Sample</Text>
-            <Text style={styles.total}>
-              Total {sampleProgress ? sampleProgress.total : 0} Questions
-            </Text>
-          </View>
-          <View style={styles.barStyle}>
-            <ProgressBar data={progressToBarData(sampleProgress)} />
-            <View style={styles.barText}>
-              <Text style={{ marginRight: 10 }}>
-                Learned: {sampleProgress.learned}
-              </Text>
-              <Text>Mistakes: {sampleProgress.mistakes}</Text>
+          <View>
+            <View style={styles.cardTitle}>
+              <Text style={styles.textFont}>SAA-C02</Text>
+              <Text style={styles.total}>Total 466 Questions</Text>
+            </View>
+            <View style={styles.barStyle}>
+              <ProgressBar data={[{ value: 1, color: "#C2C0C0" }]} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <View style={styles.button}>
+                <Text style={styles.text}>Study</Text>
+              </View>
+              <View style={styles.button}>
+                <Text style={styles.text}>Test</Text>
+              </View>
+            </View>
+            <View style={styles.horizontalLine} />
+            <View style={styles.cardTitle}>
+              <Text style={styles.textFont}>SAA-C01</Text>
+              <Text style={styles.total}>Total 1185 Questions</Text>
+            </View>
+            <View style={styles.barStyle}>
+              <ProgressBar data={[{ value: 1, color: "#C2C0C0" }]} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <View style={styles.button}>
+                <Text style={styles.text}>Study</Text>
+              </View>
+              <View style={styles.button}>
+                <Text style={styles.text}>Test</Text>
+              </View>
             </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                onStudyPressed("sample");
-              }}
-            >
-              <Text style={styles.text}>Study</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                onTestPressed("sample");
-              }}
-            >
-              <Text style={styles.text}>Test</Text>
-            </TouchableOpacity>
+          <View style={{ position: "absolute", width: "100%", height: "100%", alignItems: 'center'}}>
+            <Icon name="lock" size={16} color="#6C6C6C" />
           </View>
         </Card>
-        <Card containerStyle={styles.cardContainer}>
-          <Button
-            buttonStyle={{
-              paddingBottom: 20,
-              backgroundColor: "transparent",
-            }}
-            icon={<Icon name="lock" size={16} color="#6C6C6C" />}
-            onPress={() => onLockerClick}
-          />
-          <View style={styles.cardTitle}>
-            <Text style={styles.textFont}>SAA-C02</Text>
-            <Text style={styles.total}>Total 466 Questions</Text>
-          </View>
-          <View style={styles.barStyle}>
-            <ProgressBar data={progressToBarData({ total: 466, learned: 0, mistakes: 0 })} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.text}>Study</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.text}>Test</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.horizontalLine} />
-          <View style={styles.cardTitle}>
-            <Text style={styles.textFont}>SAA-C01</Text>
-            <Text style={styles.total}>Total 1148 Questions</Text>
-          </View>
-          <View style={styles.barStyle}>
-            <ProgressBar data={progressToBarData({ total: 1148, learned: 0, mistakes: 0 })} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
-            <Text style={styles.text}>Study</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.text}>Test</Text>
-            </TouchableOpacity>
-          </View>
-        </Card>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Hello, Good Morning</Text>
-      {!purchased && UnpurchasedHome()}
-      {purchased && (
+      {!showFullContents && (
+        <View>
+          <Card containerStyle={styles.cardContainer}>
+            <View style={styles.cardTitle}>
+              <Text style={styles.textFont}>Sample</Text>
+              <Text style={styles.total}>
+                Total {sampleProgress ? sampleProgress.total : 0} Questions
+              </Text>
+            </View>
+            <View style={styles.barStyle}>
+              <ProgressBar data={progressToBarData(sampleProgress)} />
+              <View style={styles.barText}>
+                <Text style={{ marginRight: 10 }}>
+                  Learned: {sampleProgress.learned}
+                </Text>
+                <Text>Mistakes: {sampleProgress.mistakes}</Text>
+              </View>
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  onStudyPressed("sample");
+                }}
+              >
+                <Text style={styles.text}>Study</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  onTestPressed("sample");
+                }}
+              >
+                <Text style={styles.text}>Test</Text>
+              </TouchableOpacity>
+            </View>
+          </Card>
+          <ForSaleContents />
+        </View>
+      )}
+
+      {showFullContents && (
         <View>
           <Card containerStyle={styles.cardContainer}>
             <View style={styles.cardTitle}>
@@ -213,7 +244,6 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.text}>Test</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.horizontalLine} />
           </Card>
           <Card containerStyle={styles.cardContainer}>
             <View style={styles.cardTitle}>
@@ -256,7 +286,6 @@ const styles = StyleSheet.create({
     padding: "2%",
     backgroundColor: "#ffffff",
   },
-
   cardContainer: {
     shadowOffset: { width: 5, height: 5 },
     shadowColor: "#C2C0C0",

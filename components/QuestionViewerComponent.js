@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView, Text, TextInput } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import QuestionComponent from "../components/QuestionComponent";
 import { questionById } from "../data/questions";
@@ -7,7 +7,7 @@ import { setQuestionProgress } from "../data";
 import _ from "lodash";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Toast from 'react-native-easy-toast'
+import Toast from "react-native-easy-toast";
 
 export default function QuestionViewerComponent({
   examVersion,
@@ -26,7 +26,7 @@ export default function QuestionViewerComponent({
   const toast = useRef(null);
 
   useEffect(() => {
-    loadNextQuestion();
+    loadQuestion(questionIdIterator.i);
     return () => {};
   }, [questionIdIterator, showAnswerOnQuestionChange, alwaysShowAnswer]);
 
@@ -44,13 +44,17 @@ export default function QuestionViewerComponent({
     }
   };
 
-  const loadNextQuestion = () => {
-    if (questionIdIterator.hasNext()) {
-      let id = questionIdIterator.next();
-      if (onQuestionChange) {
-        onQuestionChange(questionIdIterator.i);
-      }
-      questionById(examVersion, id).then((q) => {
+  const loadQuestion = (index) => {
+    if (index < 0 || index >= questionIdIterator.questionIdArray.length) {
+      toast.current.show("No question");
+      return;
+    }
+    questionById(examVersion, questionIdIterator.questionIdArray[index]).then(
+      (q) => {
+        questionIdIterator.i = index;
+        if (onQuestionChange) {
+          onQuestionChange(questionIdIterator.i);
+        }
         setQuestion(q);
         let cc = [];
         if (
@@ -61,9 +65,9 @@ export default function QuestionViewerComponent({
         }
         setChoices(cc);
         setShowAnswer(alwaysShowAnswer);
-      });
-      return;
-    }
+      }
+    );
+    return;
   };
 
   const loadPreviousQuestion = () => {
@@ -111,7 +115,7 @@ export default function QuestionViewerComponent({
     }
     if (direction === 1) {
       if (questionIdIterator.hasNext()) {
-        loadNextQuestion();
+        loadQuestion(++questionIdIterator.i);
         return;
       }
       if (onLastQuestionFinished) {
@@ -145,40 +149,49 @@ export default function QuestionViewerComponent({
               showQuestionLabels={showQuestionLabels}
             ></QuestionComponent>
           )}
-          </View>
-          </ScrollView>
-          <View style={styles.bottons}>
-            <Button
-              titleStyle={{
-                fontSize: 16,
-                paddingLeft: 10,
-              }}
-              buttonStyle={{
-                paddingLeft: 15,
-                paddingRight: 15,
-                backgroundColor: "#4FC1E9",
-              }}
-              icon={<Icon name="arrow-left" size={15} color="white" />}
-              title="Prev"
-              onPress={() => onQuestionChangeButtonClick(-1)}
-            />
-            <Button
-              buttonStyle={{
-                paddingLeft: 15,
-                paddingRight: 15,
-                backgroundColor: "#4FC1E9",
-                position: 'relative'
-              }}
-              titleStyle={{
-                fontSize: 16,
-                paddingRight: 10,
-              }}
-              iconRight={true}
-              icon={<Icon name="arrow-right" size={15} color="white" />}
-              title="Next"
-              onPress={() => onQuestionChangeButtonClick(1)}
-            />
-          </View>
+        </View>
+      </ScrollView>
+      <View style={styles.bottons}>
+        <Button
+          titleStyle={{
+            fontSize: 16,
+            paddingLeft: 10,
+          }}
+          buttonStyle={{
+            paddingLeft: 15,
+            paddingRight: 15,
+            backgroundColor: "#4FC1E9",
+          }}
+          icon={<Icon name="arrow-left" size={15} color="white" />}
+          title="Prev"
+          onPress={() => onQuestionChangeButtonClick(-1)}
+        />
+        <TextInput
+          style={{ height: 20, borderColor: "gray", borderWidth: 1 }}
+          keyboardType="numeric"
+          onSubmitEditing={({ nativeEvent }) => {
+            loadQuestion(_.toInteger(nativeEvent.text) - 1);
+          }}
+          defaultValue={`${questionIdIterator.i + 1}`}
+        />
+        <Text>/{questionIdIterator.questionIdArray.length}</Text>
+        <Button
+          buttonStyle={{
+            paddingLeft: 15,
+            paddingRight: 15,
+            backgroundColor: "#4FC1E9",
+            position: "relative",
+          }}
+          titleStyle={{
+            fontSize: 16,
+            paddingRight: 10,
+          }}
+          iconRight={true}
+          icon={<Icon name="arrow-right" size={15} color="white" />}
+          title="Next"
+          onPress={() => onQuestionChangeButtonClick(1)}
+        />
+      </View>
       <Toast ref={toast} />
     </View>
   );

@@ -45,7 +45,7 @@ export default function TestScreen({ route, navigation }) {
     }
     return {
       questionIdArray: session.questionIds,
-      i: session.currentIndex - 1,
+      i: session.currentIndex,
       hasNext: function () {
         return this.i + 1 < this.questionIdArray.length;
       },

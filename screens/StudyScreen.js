@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text, Switch, Card } from "react-native";
+import { View, StyleSheet, Text, Switch } from "react-native";
 import { useState, useRef } from "react";
 import QuestionViewerComponent from "../components/QuestionViewerComponent";
 import { getData } from "../data";
@@ -8,7 +8,6 @@ import { questionCount } from "../data/questions";
 import _ from "lodash";
 import OptionsMenu from "../components/OptionMenuComponent";
 import Toast from "react-native-easy-toast";
-import { ScrollView } from "react-native-gesture-handler";
 
 export default function StudyScreen({ navigation, route }) {
   const { examVersion } = route.params;
@@ -67,7 +66,7 @@ export default function StudyScreen({ navigation, route }) {
     return { All, Saved, Mistakes, Unfinished, Learned };
   };
 
-  const questionIdIterator = (filter, startIndex = -1) => {
+  const questionIdIterator = (filter, startIndex = 0) => {
     if (_.isEmpty(idMap[filter])) {
       // TODO: add no question warning
       return;
@@ -120,10 +119,6 @@ export default function StudyScreen({ navigation, route }) {
     }
   };
 
-  const handleQuestionChange = (index) => {
-    setQuestionIndex(index);
-  };
-
   return (
     <View style={styles.view}>
       <View style={styles.controllerStyle}>
@@ -136,9 +131,6 @@ export default function StudyScreen({ navigation, route }) {
           />
           <Text style={styles.toggleText}>Show Anwser</Text>
         </View>
-        <Text style={styles.pageNumberStyle}>
-          {questionIndex + 1}/{idMap[filter].length}
-        </Text>
         <View style={styles.filterStyle}>
           <OptionsMenu
             customButton={<MyIcon filter={filter} />}
@@ -156,12 +148,11 @@ export default function StudyScreen({ navigation, route }) {
 
       {questionIdIterator(filter) && true && (
         <QuestionViewerComponent
-          questionIdIterator={questionIdIterator(filter, questionIndex - 1)}
+          questionIdIterator={questionIdIterator(filter, questionIndex)}
           examVersion={examVersion}
           showAnswerOnQuestionChange={mode === "challenge"}
           alwaysShowAnswer={mode === "browse"}
           showQuestionLabels={true}
-          onQuestionChange={handleQuestionChange}
         />
       )}
       <Toast ref={toast} />

@@ -7,7 +7,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { questionCount } from "../data/questions";
 import _ from "lodash";
 import OptionsMenu from "../components/OptionMenuComponent";
-import Toast from 'react-native-easy-toast';
+import Toast from "react-native-easy-toast";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function StudyScreen({ navigation, route }) {
@@ -27,14 +27,14 @@ export default function StudyScreen({ navigation, route }) {
   useFocusEffect(
     React.useCallback(() => {
       fetchQuestionIds(examVersion).then((v) => setIdMap(v));
-      return () => { };
+      return () => {};
     }, [])
   );
 
   const onFilterSelected = (selected) => {
     fetchQuestionIds(examVersion).then((v) => {
       if (_.isEmpty(v[selected])) {
-        toast.current.show('no questions');
+        toast.current.show("no questions");
         return;
       }
       setQuestionIndex(0);
@@ -55,13 +55,13 @@ export default function StudyScreen({ navigation, route }) {
     let Mistakes = _.isEmpty(progress)
       ? []
       : Object.keys(progress).filter(
-        (k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong"
-      );
+          (k) => !_.isEmpty(progress[k]) && progress[k].status === "wrong"
+        );
     let Learned = _.isEmpty(progress)
       ? []
       : Object.keys(progress).filter(
-        (k) => !_.isEmpty(progress[k]) && progress[k].status === "correct"
-      );
+          (k) => !_.isEmpty(progress[k]) && progress[k].status === "correct"
+        );
     let Unfinished = _.difference(All, Mistakes);
     Unfinished = _.difference(Unfinished, Learned);
     return { All, Saved, Mistakes, Unfinished, Learned };
@@ -109,22 +109,20 @@ export default function StudyScreen({ navigation, route }) {
     modeOptions = ["Challenge mode", "Browse mode    \u2713", "Cancel"];
   }
 
-  const MyIcon = ({filter}) => {
-    return (
-    <Text>Filtered By:{filter}</Text>
-    )
-}
+  const MyIcon = ({ filter }) => {
+    return <Text>Filtered By:{filter}</Text>;
+  };
   const toggleSwitch = (value) => {
     if (value) {
       setMode("browse");
     } else {
       setMode("challenge");
     }
-  }
+  };
 
   const handleQuestionChange = (index) => {
     setQuestionIndex(index);
-  }
+  };
 
   return (
     <ScrollView style={styles.view}>
@@ -132,17 +130,18 @@ export default function StudyScreen({ navigation, route }) {
         <View>
           <Switch
             trackColor={{ false: "#C2C0C0", true: "#F1BC5E" }}
-            onValueChange={value => toggleSwitch(value)}
+            onValueChange={(value) => toggleSwitch(value)}
             value={mode === "browse"}
-            style={{ transform: [{ scaleX: .9 }, { scaleY: .8 }] }}
-
+            style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.8 }] }}
           />
           <Text style={styles.toggleText}>Show Anwser</Text>
         </View>
-        <Text style={styles.pageNumberStyle}>{questionIndex + 1}/{idMap[filter].length}</Text>
+        <Text style={styles.pageNumberStyle}>
+          {questionIndex + 1}/{idMap[filter].length}
+        </Text>
         <View style={styles.filterStyle}>
           <OptionsMenu
-            customButton={(<MyIcon filter={filter} />)}
+            customButton={<MyIcon filter={filter} />}
             options={filterOptions}
             actions={[
               () => onFilterSelected("All"),
@@ -154,7 +153,7 @@ export default function StudyScreen({ navigation, route }) {
           />
         </View>
       </View>
-      
+
       {questionIdIterator(filter) && true && (
         <QuestionViewerComponent
           questionIdIterator={questionIdIterator(filter, questionIndex - 1)}
@@ -174,21 +173,21 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     paddingTop: "2%",
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
 
   filterStyle: {
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
 
   controllerStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
     marginLeft: 10,
     marginRight: 10,
-    alignItems: "center",    
+    alignItems: "center",
   },
   toggleText: {
     fontSize: 9,
@@ -196,8 +195,6 @@ const styles = StyleSheet.create({
   },
 
   pageNumberStyle: {
-    textAlign: 'center',
-
-  }
-  
+    textAlign: "center",
+  },
 });

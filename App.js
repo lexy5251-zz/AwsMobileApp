@@ -7,6 +7,7 @@ import StudyScreen from './screens/StudyScreen';
 import TestScreen from './screens/TestScreen';
 import TestMenuScreen from './screens/TestMenuScreen';
 import TestHistoryScreen from './screens/TestHistoryScreen';
+import TestReviewScreen from './screens/TestReviewScreen';
 import { AppLoading } from 'expo';
 import {useFonts} from 'expo-font';
 
@@ -29,6 +30,7 @@ export default function App() {
       <Stack.Screen name="TestMenu" component={TestMenuScreen} />
       <Stack.Screen name="Test" component={TestScreen} />
       <Stack.Screen name="TestHistory" component={TestHistoryScreen} />
+      <Stack.Screen name="TestReview" component={TestReviewScreen} />
     </Stack.Navigator>
   </NavigationContainer>)
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from "react-native-elements";
 import ProgressBar from "../components/ProgressBar";
-import { View, Text, StyleSheet, StatusBar, FlatList } from "react-native";
+import { View, Text, StyleSheet, StatusBar, FlatList, TouchableOpacity } from "react-native";
 import _ from 'lodash';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -34,9 +34,11 @@ const testResultToBarData = (test) => {
     return data;
 };
 
-const Item = ({ test }) => {
+const Item = ({ item }) => {
+    const {test} = item;
     const timeAgo = new TimeAgo('en-US');
     return (
+        <TouchableOpacity onPress={item.onPress}>
         <Card containerStyle={styles.cardContainer}>
             <View style={styles.cardTitle}>
                 <Text style={styles.textFont}>Test</Text>
@@ -54,21 +56,21 @@ const Item = ({ test }) => {
                 <Text>Duration:{humanizeDuration(test.durationMs, {round: true})}</Text>
             </View>
         </Card>
+        </TouchableOpacity>
     )
 
 }
 
-export default function TestResultComponent({ testList }) {
+export default function TestResultComponent({ testList, onTestPress }) {
     TimeAgo.addLocale(en);
-
     const renderItem = ({ item }) => (
-        <Item test={item} />
+        <Item item={item} />
     )
 
     return (
         <View style={styles.container}>
             <FlatList
-                data={testList}
+                data={testList.map((t) => {return {test: t, onPress: () => onTestPress(t)}})}
                 renderItem={renderItem}
             />
         </View>

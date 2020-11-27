@@ -22,6 +22,7 @@ export default function QuestionViewerComponent({
 }) {
   const [question, setQuestion] = useState();
   const [choices, setChoices] = useState([]);
+  const [indexInputValue, setIndexInputValue] = useState("");
   const [showAnswer, setShowAnswer] = useState(alwaysShowAnswer);
   const toast = useRef(null);
 
@@ -46,6 +47,7 @@ export default function QuestionViewerComponent({
 
   const loadQuestion = (index) => {
     if (index < 0 || index >= questionIdIterator.questionIdArray.length) {
+      setIndexInputValue(`${questionIdIterator.i+1}`);
       toast.current.show("No question");
       return;
     }
@@ -65,6 +67,7 @@ export default function QuestionViewerComponent({
         }
         setChoices(cc);
         setShowAnswer(alwaysShowAnswer);
+        setIndexInputValue(`${index+1}`);
       }
     );
     return;
@@ -172,7 +175,7 @@ export default function QuestionViewerComponent({
           onSubmitEditing={({ nativeEvent }) => {
             loadQuestion(_.toInteger(nativeEvent.text) - 1);
           }}
-          defaultValue={`${questionIdIterator.i + 1}`}
+          defaultValue={indexInputValue}
         />
         <Text>/{questionIdIterator.questionIdArray.length}</Text>
         <Button
